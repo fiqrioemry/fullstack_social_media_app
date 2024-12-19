@@ -1,6 +1,41 @@
-const { Profile } = require("../../models");
+const { User, Profile } = require("../../models");
 const { uploadMediaToCloudinary } = require("../../utils/cloudinary");
 const errorHandler = require("../../utils/errorHandler");
+
+async function getUserHomeDetails(req, res) {
+  const { userId } = req.params;
+
+  try {
+    const user = await User.findByPk(userId, {
+      attributes: [
+        "id",
+        "username",
+        "bio",
+        [fn("COUNT", col("Followers.id")), "followersCount"],
+        [fn("COUNT", col("Following.id")), "followingCount"],
+      ],
+      include: [
+        {
+          model: User,
+          as: "Followers",
+          attributes: [],
+          through: { attributes: [] },
+        },
+        {
+          model: User,
+          as: "Following",
+          attributes: [],
+          through: { attributes: [] },
+        },
+      ],
+      group: ["User.id"],
+    });
+
+    res.status(200).json({ success: true, data: user });
+  } catch (error) {
+    errorHandler(error, "Failed to get user details");
+  }
+}
 
 async function getUserProfile(req, res) {
   try {
@@ -84,4 +119,4 @@ async function updateUserProfile(req, res) {
   }
 }
 
-module.exports = { getUserProfile, updateUserProfile };
+module.exports = { getUserProfile, updateUserProfile, getUserHomeDetails };

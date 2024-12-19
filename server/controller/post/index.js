@@ -168,21 +168,23 @@ async function getFollowedPosts(req, res) {
   const { userId } = req.user;
 
   try {
-    const followedUsers = await Follower.findAll({
+    const followedIds = await Follower.findAll({
       where: { followerId: userId },
       attributes: ["followedId"],
-    });
+      raw: true,
+    }).then((follows) => follows.map((follow) => follow.followedId));
 
-    if (!followedUsers.length) {
-      return res
-        .status(404)
-        .json({ success: false, message: "No followed users found" });
+    if (!followedIds.length) {
+      return res.status(404).json({
+        success: false,
+        message: "You are not following anyone yet",
+      });
     }
 
     const posts = await Post.findAll({
       where: {
         userId: {
-          [Sequelize.Op.in]: followedUsers.map((follow) => follow.followedId),
+          [Sequelize.Op.in]: followedIds,
         },
       },
       include: [
@@ -207,7 +209,11 @@ async function getFollowedPosts(req, res) {
 
     res.status(200).json({ success: true, posts });
   } catch (error) {
-    errorHandler(error, "Failed to retrieve followed posts");
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to retrieve followed posts",
+    });
   }
 }
 
@@ -235,7 +241,7 @@ async function getUserPosts(req, res) {
         .json({ success: false, message: "User has no post" });
     }
 
-    res.status(200).json({ success: true, posts });
+    res.status(200).json({ success: true, data: posts });
   } catch (error) {
     errorHandler(error, "Failed to retrieve public posts");
   }
@@ -244,23 +250,46 @@ async function getUserPosts(req, res) {
 async function getPostDetail(req, res) {
   const postId = req.params;
   try {
-    const post = await Post.findByPk({
-      postId,
+    const post = await Post.findByPk(postId, {
       include: [
         { model: User, attributes: ["id", "username"] },
         {
           model: Comment,
+          as: "parentComment",
           attributes: ["id", "comment"],
-          include: [{ model: User, attributes: ["id", "username"] }],
+          include: [
+            { model: User, attributes: ["id", "username"] },
+            {
+              model: Like,
+              attributes: ["id"],
+              include: [{ model: User, attributes: ["id", "username"] }],
+            },
+            {
+              model: Comment,
+              as: "replies",
+              attributes: ["id", "comment"],
+              include: [{ model: User, attributes: ["id", "username"] }],
+            },
+          ],
         },
         {
           model: Like,
-          attributes: ["id", "comment"],
+          attributes: ["id"],
           include: [{ model: User, attributes: ["id", "username"] }],
         },
       ],
     });
-  } catch (error) {}
+
+    if (!post) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Post not found" });
+    }
+
+    res.status(200).json({ success: true, data: post });
+  } catch (error) {
+    errorHandler(error, "Failed to retrieve public posts");
+  }
 }
 
 module.exports = {

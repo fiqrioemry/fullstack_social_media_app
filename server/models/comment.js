@@ -10,7 +10,6 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.hasMany(models.Like);
-      // Relasi self-referencing untuk balasan komentar
       this.hasMany(models.Comment, {
         foreignKey: "commentId",
         as: "replies",
@@ -19,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       // Relasi balasan ke komentar induk (self-referencing)
       this.belongsTo(models.Comment, {
         foreignKey: "commentId",
-        as: "parentComment", // Alias untuk komentar induk
+        as: "parentComment",
       });
 
       this.belongsTo(models.User, { foreignKey: "userId" });

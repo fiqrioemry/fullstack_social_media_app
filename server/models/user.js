@@ -10,19 +10,19 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       this.hasOne(models.Profile);
       this.hasMany(models.Post);
-      this.hasMany(models.Follower);
+      this.hasMany(models.Follow);
       this.hasMany(models.Like);
       this.hasMany(models.Comment);
 
       this.belongsToMany(models.User, {
-        through: models.Follower,
+        through: models.Follow,
         as: "Followers", // Alias untuk pengikut
         foreignKey: "followedId",
       });
 
       // Pengguna yang diikuti oleh user ini (Following)
       this.belongsToMany(models.User, {
-        through: models.Follower,
+        through: models.Follow,
         as: "Followings", // Alias untuk yang diikuti
         foreignKey: "followerId",
       });
