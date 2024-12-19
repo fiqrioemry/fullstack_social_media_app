@@ -1,4 +1,3 @@
-const {} = require("../../models");
 const { User, Post, PostGallery } = require("../../models");
 const {
   uploadMediaToCloudinary,
@@ -165,18 +164,111 @@ async function getAllPublicPosts(req, res) {
   }
 }
 
-// mengambil post dari user yang kita follow saja untuk halaman home
-async function getFollowedPosts(req, res) {}
+async function getFollowedPosts(req, res) {
+  const { userId } = req.user;
 
-// mengambil semua post dari user ketika kita click bio / masuk ke halaman homenya
-async function getUserPosts(req, res) {}
+  try {
+    const followedUsers = await Follower.findAll({
+      where: { followerId: userId },
+      attributes: ["followedId"],
+    });
 
-// mengambil detail dari post setelah kita click sehingga kliatan like,comment dll
-async function getPostDetail(req, res) {}
+    if (!followedUsers.length) {
+      return res
+        .status(404)
+        .json({ success: false, message: "No followed users found" });
+    }
+
+    const posts = await Post.findAll({
+      where: {
+        userId: {
+          [Sequelize.Op.in]: followedUsers.map((follow) => follow.followedId),
+        },
+      },
+      include: [
+        {
+          model: User,
+          attributes: ["id", "username"],
+        },
+        {
+          model: PostGallery,
+          attributes: ["image"],
+        },
+      ],
+      order: [["createdAt", "DESC"]],
+    });
+
+    if (!posts.length) {
+      return res.status(404).json({
+        success: false,
+        message: "No posts found from followed users",
+      });
+    }
+
+    res.status(200).json({ success: true, posts });
+  } catch (error) {
+    errorHandler(error, "Failed to retrieve followed posts");
+  }
+}
+
+async function getUserPosts(req, res) {
+  const userId = req.params;
+  try {
+    const posts = await Post.findAll({
+      order: [["createdAt", "DESC"]],
+      include: [
+        {
+          model: User,
+          where: { userId: userId },
+          attributes: ["id", "username"],
+        },
+        {
+          model: PostGallery,
+          attributes: ["image"],
+        },
+      ],
+    });
+
+    if (!posts.length) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User has no post" });
+    }
+
+    res.status(200).json({ success: true, posts });
+  } catch (error) {
+    errorHandler(error, "Failed to retrieve public posts");
+  }
+}
+
+async function getPostDetail(req, res) {
+  const postId = req.params;
+  try {
+    const post = await Post.findByPk({
+      postId,
+      include: [
+        { model: User, attributes: ["id", "username"] },
+        {
+          model: Comment,
+          attributes: ["id", "comment"],
+          include: [{ model: User, attributes: ["id", "username"] }],
+        },
+        {
+          model: Like,
+          attributes: ["id", "comment"],
+          include: [{ model: User, attributes: ["id", "username"] }],
+        },
+      ],
+    });
+  } catch (error) {}
+}
 
 module.exports = {
   createNewPost,
   updateMyPost,
   deleteMyPost,
   getAllPublicPosts,
+  getFollowedPosts,
+  getUserPosts,
+  getPostDetail,
 };
