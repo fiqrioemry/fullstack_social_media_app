@@ -54,7 +54,10 @@ async function userSignIn(req, res) {
     const userData = await User.findOne({
       where: { [Op.or]: [{ email: identifier }, { username: identifier }] },
       include: [
-        { model: Profile, attributes: ["firstname", "lastname", "avatar"] },
+        {
+          model: Profile,
+          attributes: ["avatar"],
+        },
       ],
     });
 
@@ -72,13 +75,11 @@ async function userSignIn(req, res) {
         message: "Password is wrong",
       });
 
-    console.log(userData);
-
     const payload = {
       userId: userData.id,
       userEmail: userData.email,
       userName: userData.username,
-      userAvatar: userData.Profile?.userAvatar,
+      userAvatar: userData.Profile.dataValues.avatar,
     };
     const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN, {
       expiresIn: "1h",
