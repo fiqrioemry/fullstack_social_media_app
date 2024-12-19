@@ -23,4 +23,13 @@ async function uploadMediaToCloudinary(filePath) {
   }
 }
 
-module.exports = { uploadMediaToCloudinary };
+const deleteMediaFromCloudinary = async (imageUrl) => {
+  try {
+    await cloudinary.uploader.destroy(imageUrl);
+  } catch (error) {
+    console.log(error);
+    throw new Error("failed to delete assest from cloudinary");
+  }
+};
+
+module.exports = { uploadMediaToCloudinary, deleteMediaFromCloudinary };

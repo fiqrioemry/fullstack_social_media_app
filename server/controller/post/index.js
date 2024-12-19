@@ -1,17 +1,182 @@
-// create new post
-async function createNewPost(req, res) {}
+const {} = require("../../models");
+const { User, Post, PostGallery } = require("../../models");
+const {
+  uploadMediaToCloudinary,
+  deleteMediaFromCloudinary,
+} = require("../../utils/cloudinary");
+const errorHandler = require("../../utils/errorHandler");
 
-// get own post
-async function getMyPost(req, res) {}
+// create new post
+async function createNewPost(req, res) {
+  const files = req.files;
+  const { userId } = req.user;
+  const { content } = req.body;
+  try {
+    if (!content || files.length === 0) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Content or images are missing" });
+    }
+
+    const newPost = await Post.create({ userId, content });
+
+    const uploadPromises = files.map((fileItem) =>
+      uploadMediaToCloudinary(fileItem.path)
+    );
+
+    const results = await Promise.all(uploadPromises);
+
+    const images = results.map((result) => {
+      return {
+        postId: newPost.id,
+        image: result.secure_url,
+      };
+    });
+
+    await PostGallery.bulkCreate(images);
+
+    res.status(201).send({ success: true, message: "New post is created" });
+  } catch (error) {
+    errorHandler(error, "Failed to create new post");
+  }
+}
 
 // update own post
-async function updateMyPost(req, res) {}
+async function updateMyPost(req, res) {
+  const { postId } = req.params;
+  const files = req.files; // Gambar atau file baru yang diupload
+  const { userId } = req.user; // ID User yang sedang login
+  const { content } = req.body; // Konten atau caption baru
+
+  try {
+    const post = await Post.findOne({
+      where: { id: postId, userId },
+    });
+
+    if (!post) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Post not found or unauthorized" });
+    }
+
+    if (content) {
+      post.content = content;
+    }
+
+    if (files && files.length > 0) {
+      const oldImages = await PostGallery.findAll({
+        where: { postId: post.id },
+      });
+
+      const updatedImages = files.map((fileItem) =>
+        uploadMediaToCloudinary(fileItem.path)
+      );
+
+      const results = await Promise.all(updatedImages);
+
+      const newImages = results.map((result) => ({
+        postId: post.id,
+        image: result.secure_url, // URL gambar yang baru
+      }));
+
+      const oldImagesUrls = oldImages.map((image) => image.image);
+      oldImagesUrls.forEach((imageUrl) => {
+        deleteMediaFromCloudinary(imageUrl);
+      });
+
+      await PostGallery.destroy({ where: { postId: post.id } });
+
+      await PostGallery.bulkCreate(newImages);
+    }
+
+    await post.save();
+
+    res.status(200).json({ success: true, message: "Post is updated" });
+  } catch (error) {
+    errorHandler(error, "Failed to update post");
+  }
+}
 
 // delete own post
-async function deleteMyPost(req, res) {}
+async function deleteMyPost(req, res) {
+  const { postId } = req.params;
+  const { userId } = req.user;
 
-// get post from followed user
-async function getFollowedPost(req, res) {}
+  try {
+    const post = await Post.findOne({
+      where: { id: postId, userId },
+    });
 
-// get other user post
+    // Pastikan post ditemukan
+    if (!post) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Post not found or unauthorized" });
+    }
+
+    const images = await PostGallery.findAll({
+      where: { postId: post.id },
+    });
+
+    images.forEach((image) => {
+      deleteMediaFromCloudinary(image.image);
+    });
+
+    await PostGallery.destroy({
+      where: { postId: post.id },
+    });
+
+    await post.destroy();
+
+    res
+      .status(200)
+      .json({ success: true, message: "Post deleted successfully" });
+  } catch (error) {
+    errorHandler(error, "Failed to delete post");
+  }
+}
+
+async function getAllPublicPosts(req, res) {
+  try {
+    const posts = await Post.findAll({
+      order: [["createdAt", "DESC"]],
+      include: [
+        {
+          model: User,
+          where: { isPrivate: false },
+          attributes: ["id", "username"],
+        },
+        {
+          model: PostGallery,
+          attributes: ["image"],
+        },
+      ],
+    });
+
+    if (!posts.length) {
+      return res
+        .status(404)
+        .json({ success: false, message: "No public posts found" });
+    }
+
+    res.status(200).json({ success: true, posts });
+  } catch (error) {
+    errorHandler(error, "Failed to retrieve public posts");
+  }
+}
+
+// mengambil post dari user yang kita follow saja untuk halaman home
+async function getFollowedPosts(req, res) {}
+
+// mengambil semua post dari user ketika kita click bio / masuk ke halaman homenya
+async function getUserPosts(req, res) {}
+
+// mengambil detail dari post setelah kita click sehingga kliatan like,comment dll
 async function getPostDetail(req, res) {}
+
+module.exports = {
+  createNewPost,
+  updateMyPost,
+  deleteMyPost,
+  getAllPublicPosts,
+};
