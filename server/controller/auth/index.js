@@ -72,6 +72,8 @@ async function userSignIn(req, res) {
         message: "Password is wrong",
       });
 
+    console.log(userData);
+
     const payload = {
       userId: userData.id,
       userEmail: userData.email,
