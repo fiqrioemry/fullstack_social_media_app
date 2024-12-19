@@ -13,6 +13,19 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.Follower);
       this.hasMany(models.Like);
       this.hasMany(models.Comment);
+
+      this.belongsToMany(models.User, {
+        through: models.Follower,
+        as: "Followers", // Alias untuk pengikut
+        foreignKey: "followedId",
+      });
+
+      // Pengguna yang diikuti oleh user ini (Following)
+      this.belongsToMany(models.User, {
+        through: models.Follower,
+        as: "Followings", // Alias untuk yang diikuti
+        foreignKey: "followerId",
+      });
     }
   }
   User.init(

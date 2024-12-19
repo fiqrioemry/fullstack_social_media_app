@@ -82,7 +82,7 @@ async function userSignIn(req, res) {
       userAvatar: userData.Profile.dataValues.avatar,
     };
     const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN, {
-      expiresIn: "1h",
+      expiresIn: "1d",
     });
 
     const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN, {
