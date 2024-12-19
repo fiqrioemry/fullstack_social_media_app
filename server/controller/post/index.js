@@ -135,6 +135,7 @@ async function deleteMyPost(req, res) {
   }
 }
 
+// get all public post
 async function getAllPublicPosts(req, res) {
   try {
     const posts = await Post.findAll({
@@ -164,6 +165,7 @@ async function getAllPublicPosts(req, res) {
   }
 }
 
+// get following user post
 async function getFollowedPosts(req, res) {
   const { userId } = req.user;
 
@@ -217,38 +219,32 @@ async function getFollowedPosts(req, res) {
   }
 }
 
+// get all user post in home
 async function getUserPosts(req, res) {
-  const userId = req.params;
-  try {
-    const posts = await Post.findAll({
-      order: [["createdAt", "DESC"]],
-      include: [
-        {
-          model: User,
-          where: { userId: userId },
-          attributes: ["id", "username"],
-        },
-        {
-          model: PostGallery,
-          attributes: ["image"],
-        },
-      ],
-    });
+  const { userId } = req.params;
+  const { page = 1, limit = 10 } = req.query;
 
-    if (!posts.length) {
-      return res
-        .status(404)
-        .json({ success: false, message: "User has no post" });
-    }
+  try {
+    const posts = await Post.findAndCountAll({
+      where: { userId },
+      include: [{ model: PostGallery, attributes: ["image"] }],
+      limit: parseInt(limit),
+      offset: (parseInt(page) - 1) * parseInt(limit),
+      order: [["createdAt", "DESC"]],
+    });
 
     res.status(200).json({ success: true, data: posts });
   } catch (error) {
-    errorHandler(error, "Failed to retrieve public posts");
+    console.error(error);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to get user posts" });
   }
 }
 
+// get the detail of post
 async function getPostDetail(req, res) {
-  const postId = req.params;
+  const { postId } = req.params;
   try {
     const post = await Post.findByPk(postId, {
       include: [
