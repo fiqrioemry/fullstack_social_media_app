@@ -6,7 +6,7 @@ async function getUserProfile(req, res) {
   try {
     const { userId } = req.user;
 
-    const profileData = await Profile.findOne({ userId });
+    const profileData = await Profile.findOne({ where: { userId } });
 
     if (!profileData)
       return res
