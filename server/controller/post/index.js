@@ -150,7 +150,30 @@ async function getAllPublicPosts(req, res) {
           model: PostGallery,
           attributes: ["image"],
         },
+        {
+          model: Comment,
+          as: "parentComment",
+          attributes: [
+            "id",
+            [fn("COUNT", col("parentComment.id")), "commentCount"],
+          ],
+          include: [
+            {
+              model: Comment,
+              as: "replies",
+              attributes: ["id"],
+            },
+          ],
+          // Mengelompokkan berdasarkan Post.id agar perhitungan dilakukan dengan benar
+          group: ["Post.id", "parentComment.id"],
+        },
+        {
+          model: Like,
+          attributes: ["id", [fn("COUNT", col("Like.id")), "likeCount"]],
+          group: ["Post.id"],
+        },
       ],
+      group: ["Post.id", "User.id", "PostGallery.id"],
     });
 
     if (!posts.length) {

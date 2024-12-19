@@ -1,10 +1,14 @@
 const express = require("express");
-const { getUserProfile, updateUserProfile } = require("../../controller/user");
+const {
+  getUserProfile,
+  updateUserProfile,
+  getUserHomeDetails,
+} = require("../../controller/user");
 const isAuthenticate = require("../../middleware.js/isAuthenticate");
 const { upload } = require("../../middleware.js/media");
 const router = express.Router();
 
-router.get("/profile", isAuthenticate, getUserProfile);
+router.get("/profile/:username", isAuthenticate, getUserHomeDetails);
 router.put(
   "/profile/update",
   upload("image", 1000000).single("file"),

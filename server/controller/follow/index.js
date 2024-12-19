@@ -5,7 +5,7 @@ async function followNewUser(req, res) {
   const { followedId } = req.params;
   try {
     if (userId === followedId) {
-      return res.status(400).json({
+      return res.status(400).send({
         success: false,
         message: "Cannot follow yourself",
       });
@@ -16,7 +16,7 @@ async function followNewUser(req, res) {
     });
 
     if (existingFollow) {
-      return res.status(400).json({
+      return res.status(400).send({
         success: false,
         message: "You are already following this user",
       });
@@ -27,7 +27,7 @@ async function followNewUser(req, res) {
       followedId: followedId,
     });
 
-    res.status(201).json({
+    res.status(201).send({
       success: true,
       message: "Follow is success",
     });
@@ -42,7 +42,7 @@ async function unfollowUser(req, res) {
 
   try {
     if (userId === followedId) {
-      return res.status(400).json({
+      return res.status(400).send({
         success: false,
         message: "Cannot unfollow yourself",
       });
@@ -53,14 +53,14 @@ async function unfollowUser(req, res) {
     });
 
     if (!followRecord) {
-      return res.status(400).json({
+      return res.status(400).send({
         success: false,
         message: "You are not following this user",
       });
     }
     await followRecord.destroy();
 
-    res.status(200).json({
+    res.status(200).send({
       success: true,
       message: "Unfollow is success",
     });
@@ -84,12 +84,20 @@ async function getUserFollowers(req, res) {
       ],
     });
 
-    if (!followerData)
-      return res
-        .status(404)
-        .send({ success: false, message: "User has no follower" });
+    if (followerData.length === 0) {
+      return res.status(404).send({
+        success: false,
+        message: "User has no followers",
+      });
+    }
+
+    // Mengembalikan data followers
+    res.status(200).send({
+      success: true,
+      data: followerData,
+    });
   } catch (error) {
-    errorHandler(error, "Failed to get user follower");
+    errorHandler(error, "Failed to get user followers");
   }
 }
 
@@ -108,12 +116,19 @@ async function getUserFollowings(req, res) {
       ],
     });
 
-    if (!followingData)
-      return res
-        .status(404)
-        .send({ success: false, message: "User is not following someone" });
+    if (followingData.length === 0) {
+      return res.status(404).send({
+        success: false,
+        message: "User is not following anyone",
+      });
+    }
+
+    res.status(200).send({
+      success: true,
+      data: followingData,
+    });
   } catch (error) {
-    errorHandler(error, "Failed to get user following");
+    errorHandler(error, "Failed to get user followings");
   }
 }
 

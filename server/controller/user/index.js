@@ -3,10 +3,11 @@ const { uploadMediaToCloudinary } = require("../../utils/cloudinary");
 const errorHandler = require("../../utils/errorHandler");
 
 async function getUserHomeDetails(req, res) {
-  const { userId } = req.params;
+  const { username } = req.params;
 
   try {
-    const user = await User.findByPk(userId, {
+    const user = await User.findOne({
+      where: { username },
       attributes: [
         "id",
         "username",
