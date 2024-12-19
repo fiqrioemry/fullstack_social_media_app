@@ -23,7 +23,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       isPrivate: {
-        type: DataTypes.BOOLEAN,
+        type: Sequelize.BOOLEAN,
         defaultValue: false,
         allowNull: false,
       },

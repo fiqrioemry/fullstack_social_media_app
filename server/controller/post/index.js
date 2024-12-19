@@ -3,7 +3,6 @@ const {
   uploadMediaToCloudinary,
   deleteMediaFromCloudinary,
 } = require("../../utils/cloudinary");
-const errorHandler = require("../../utils/errorHandler");
 
 // create new post
 async function createNewPost(req, res) {
@@ -36,7 +35,11 @@ async function createNewPost(req, res) {
 
     res.status(201).send({ success: true, message: "New post is created" });
   } catch (error) {
-    errorHandler(error, "Failed to create new post");
+    return res.status(500).send({
+      success: false,
+      message: "Failed to create new post",
+      error: error.message,
+    });
   }
 }
 
@@ -92,7 +95,11 @@ async function updateMyPost(req, res) {
 
     res.status(200).json({ success: true, message: "Post is updated" });
   } catch (error) {
-    errorHandler(error, "Failed to update post");
+    return res.status(500).send({
+      success: false,
+      message: "Failed to get user details",
+      error: error.message,
+    });
   }
 }
 
@@ -131,7 +138,11 @@ async function deleteMyPost(req, res) {
       .status(200)
       .json({ success: true, message: "Post deleted successfully" });
   } catch (error) {
-    errorHandler(error, "Failed to delete post");
+    return res.status(500).send({
+      success: false,
+      message: "Failed to get user details",
+      error: error.message,
+    });
   }
 }
 
@@ -184,7 +195,11 @@ async function getAllPublicPosts(req, res) {
 
     res.status(200).json({ success: true, posts });
   } catch (error) {
-    errorHandler(error, "Failed to retrieve public posts");
+    return res.status(500).send({
+      success: false,
+      message: "Failed to get user details",
+      error: error.message,
+    });
   }
 }
 
@@ -307,7 +322,11 @@ async function getPostDetail(req, res) {
 
     res.status(200).json({ success: true, data: post });
   } catch (error) {
-    errorHandler(error, "Failed to retrieve public posts");
+    return res.status(500).send({
+      success: false,
+      message: "Failed to get user details",
+      error: error.message,
+    });
   }
 }
 

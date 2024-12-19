@@ -20,14 +20,14 @@ router.get("/detail/:postId", isAuthenticate, getPostDetail);
 router.post(
   "/add",
   isAuthenticate,
-  upload("any").array("files", 10),
+  upload("mixed", 100000000).array("files", 10),
   createNewPost
 );
 
 router.put(
   "/update/:postId",
   isAuthenticate,
-  upload("any").array("files", 10),
+  upload("mixed", 100000000).array("files", 10),
   updateMyPost
 );
 

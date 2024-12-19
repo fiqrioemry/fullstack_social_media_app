@@ -13,6 +13,7 @@ const storage = multer.diskStorage({
 function fileFilter(params) {
   return (req, file, cb) => {
     const allowedExtensions = {
+      mixed: /jpeg|jpg|png|webp|mp4|mkv|avi|mov/,
       image: /jpeg|jpg|png|webp/,
       video: /mp4|mkv|avi|mov/,
     };

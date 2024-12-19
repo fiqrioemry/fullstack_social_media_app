@@ -1,6 +1,7 @@
-const { User, Profile } = require("../../models");
+const { User, Profile, Follow, Post, PostGallery } = require("../../models");
 const { uploadMediaToCloudinary } = require("../../utils/cloudinary");
 const errorHandler = require("../../utils/errorHandler");
+const { fn, col } = require("sequelize");
 
 async function getUserHomeDetails(req, res) {
   const { username } = req.params;
@@ -8,35 +9,102 @@ async function getUserHomeDetails(req, res) {
   try {
     const user = await User.findOne({
       where: { username },
-      attributes: [
-        "id",
-        "username",
-        "bio",
-        [fn("COUNT", col("Followers.id")), "followersCount"],
-        [fn("COUNT", col("Following.id")), "followingCount"],
-      ],
+      attributes: ["id", "username"],
       include: [
         {
-          model: User,
-          as: "Followers",
-          attributes: [],
-          through: { attributes: [] },
-        },
-        {
-          model: User,
-          as: "Following",
-          attributes: [],
-          through: { attributes: [] },
+          model: Post,
+          attributes: ["id", "content"], // Menampilkan post user
+          include: [
+            {
+              model: PostGallery,
+              attributes: ["image"],
+            },
+          ],
         },
       ],
-      group: ["User.id"],
+      group: ["User.id"], // Group by User.id untuk agregasi COUNT
     });
 
-    res.status(200).json({ success: true, data: user });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: user,
+    });
   } catch (error) {
-    errorHandler(error, "Failed to get user details");
+    return res.status(500).send({
+      success: false,
+      message: "Failed to get user details",
+      error: error.message,
+    });
   }
 }
+
+// async function getUserHomeDetails(req, res) {
+//   const { username } = req.params;
+
+//   try {
+//     const user = await User.findOne({
+//       where: { username },
+//       attributes: [
+//         "id",
+//         "username",
+//         // Menghitung jumlah followers menggunakan Follow model
+//         [fn("COUNT", col("Followers.followerId")), "followersCount"],
+//         // Menghitung jumlah following menggunakan Follow model
+//         [fn("COUNT", col("Followings.followedId")), "followingCount"],
+//       ],
+//       include: [
+//         {
+//           model: User,
+//           as: "Followers", // Relasi Followers
+//           attributes: [], // Tidak mengambil data, hanya menghitung
+//           through: { attributes: [] }, // Tidak perlu ambil data dari junction table (Follow)
+//         },
+//         {
+//           model: User,
+//           as: "Followings", // Relasi Followings
+//           attributes: [], // Tidak mengambil data, hanya menghitung
+//           through: { attributes: [] }, // Tidak perlu ambil data dari junction table (Follow)
+//         },
+//         {
+//           model: Post,
+//           attributes: ["id", "content"], // Menampilkan post user
+//           include: [
+//             {
+//               model: PostGallery,
+//               attributes: ["image"],
+//             },
+//           ],
+//         },
+//       ],
+//       group: ["User.id"], // Group by User.id untuk agregasi COUNT
+//     });
+
+//     if (!user) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "User not found",
+//       });
+//     }
+
+//     res.status(200).json({
+//       success: true,
+//       data: user,
+//     });
+//   } catch (error) {
+//     return res.status(500).send({
+//       success: false,
+//       message: "Failed to get user details",
+//       error: error.message,
+//     });
+//   }
+// }
 
 async function getUserProfile(req, res) {
   try {

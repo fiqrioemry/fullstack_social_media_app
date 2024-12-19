@@ -16,7 +16,7 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       commentId: {
-        type: DataTypes.INTEGER,
+        type: Sequelize.INTEGER,
         allowNull: true,
       },
       comment: {
