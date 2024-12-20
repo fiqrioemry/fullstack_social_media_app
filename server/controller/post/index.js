@@ -2,8 +2,8 @@ const {
   uploadMediaToCloudinary,
   deleteMediaFromCloudinary,
 } = require("../../utils/cloudinary");
-const { fn, col } = require("sequelize");
 const { User, Post, PostGallery, Comment, Like } = require("../../models");
+const { Op } = require("sequelize");
 
 // create new post
 async function createNewPost(req, res) {
@@ -150,11 +150,11 @@ async function deleteMyPost(req, res) {
 // get all public post
 const getAllPublicPosts = async (req, res) => {
   try {
-    const { limit = 3 } = req.body;
+    const { limit = 10 } = req.body;
 
     const posts = await Post.findAll({
       limit: limit,
-      order: [["createdAt", "DESC"]],
+      order: [["createdAt", "ASC"]],
       attributes: ["id", "content", "createdAt"],
       include: [
         {
@@ -206,13 +206,12 @@ const getAllPublicPosts = async (req, res) => {
 // get following user post
 const getAllFollowingPosts = async (req, res) => {
   const { userId } = req.user;
-  const { limit = 3 } = req.body;
-
+  const { limit = 10 } = req.body;
   try {
     const user = await User.findByPk(userId, {
       include: {
         model: User,
-        as: "followings",
+        as: "Followings",
         attributes: ["id"],
       },
     });
@@ -223,7 +222,9 @@ const getAllFollowingPosts = async (req, res) => {
         .json({ success: false, message: "User not found" });
     }
 
-    const followingIds = user.followings.map((following) => following.id);
+    const followingIds = user.Followings.map(
+      (following) => following.Follow.followingId
+    );
 
     if (followingIds.length === 0) {
       return res.status(200).json({
@@ -248,14 +249,12 @@ const getAllFollowingPosts = async (req, res) => {
           attributes: ["image"],
         },
       ],
-      subQuery: false,
-      distinct: true,
     });
 
     if (!posts.length) {
       return res
         .status(404)
-        .json({ success: false, message: "No posts found" });
+        .send({ success: false, message: "No posts found" });
     }
 
     const postDetails = await Promise.all(
@@ -276,7 +275,6 @@ const getAllFollowingPosts = async (req, res) => {
       data: postDetails,
     });
   } catch (error) {
-    console.error(error);
     res.status(500).json({
       success: false,
       message: "Failed to retrieve following posts",

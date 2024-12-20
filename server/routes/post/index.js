@@ -17,8 +17,7 @@ const router = express.Router();
 router.get("/", isAuthenticate, getAllPublicPosts);
 router.get("/:postId", isAuthenticate, getPostDetail);
 router.get("/user/:userId", isAuthenticate, getUserPosts);
-router.get("/following", isAuthenticate, getAllFollowingPosts);
-
+router.get("/follow/user", isAuthenticate, getAllFollowingPosts);
 router.post(
   "/create",
   isAuthenticate,
