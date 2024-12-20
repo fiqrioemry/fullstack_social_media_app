@@ -10,12 +10,14 @@ const {
   getUserPosts,
   getPostDetail,
 } = require("../../controller/post");
+const { createCommentOrReply } = require("../../controller/comment");
 const router = express.Router();
 
+// post
 router.get("/", isAuthenticate, getAllPublicPosts);
+router.get("/:postId", isAuthenticate, getPostDetail);
 router.get("/following", isAuthenticate, getFollowedPosts);
 router.get("/user/:userId", isAuthenticate, getUserPosts);
-router.get("/detail/:postId", isAuthenticate, getPostDetail);
 
 router.post(
   "/add",
@@ -31,6 +33,9 @@ router.put(
   updateMyPost
 );
 
-router.delete("/delete/:postId", isAuthenticate, deleteMyPost);
+router.delete("/:postId/delete", isAuthenticate, deleteMyPost);
+
+// comment
+router.post("/:postId/comment", isAuthenticate, createCommentOrReply);
 
 module.exports = router;
