@@ -12,7 +12,9 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.Post);
       this.hasMany(models.Like);
       this.hasMany(models.Comment);
+      this.hasMany(models.Reply);
 
+      // many to many relation
       this.belongsToMany(models.User, {
         through: models.Follow,
         as: "Followers",
