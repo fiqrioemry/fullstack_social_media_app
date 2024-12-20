@@ -6,7 +6,7 @@ const {
   updateMyPost,
   deleteMyPost,
   getAllPublicPosts,
-  getFollowedPosts,
+  getAllFollowingPosts,
   getUserPosts,
   getPostDetail,
 } = require("../../controller/post");
@@ -16,26 +16,29 @@ const router = express.Router();
 // post
 router.get("/", isAuthenticate, getAllPublicPosts);
 router.get("/:postId", isAuthenticate, getPostDetail);
-router.get("/following", isAuthenticate, getFollowedPosts);
 router.get("/user/:userId", isAuthenticate, getUserPosts);
+router.get("/following", isAuthenticate, getAllFollowingPosts);
 
 router.post(
-  "/add",
+  "/create",
   isAuthenticate,
   upload("mixed", 100000000).array("files", 10),
   createNewPost
 );
 
 router.put(
-  "/update/:postId",
+  "/:postId/update",
   isAuthenticate,
   upload("mixed", 100000000).array("files", 10),
   updateMyPost
 );
-
 router.delete("/:postId/delete", isAuthenticate, deleteMyPost);
 
 // comment
-router.post("/:postId/comment", isAuthenticate, createCommentOrReply);
+router.post(
+  "/:postId/comment/:commentId",
+  isAuthenticate,
+  createCommentOrReply
+);
 
 module.exports = router;

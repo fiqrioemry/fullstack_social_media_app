@@ -112,21 +112,27 @@ async function getUserFollowers(req, res) {
 
 async function getUserFollowings(req, res) {
   const { userId } = req.params;
+
   try {
-    const user = await User.findByPk(userId);
+    const user = await User.findByPk(userId, {
+      include: {
+        model: User,
+        as: "followings",
+        attributes: ["username"],
+        include: {
+          model: Profile,
+          attributes: ["firstname", "lastname"],
+        },
+      },
+    });
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    const followings = await user.getFollowings({
-      attributes: ["username"],
-      include: [{ model: Profile, attributes: ["firstname", "lastname"] }],
-    });
-
     res.status(200).send({
       success: true,
-      data: followings,
+      data: user.followings, // Hanya mengembalikan followings
     });
   } catch (error) {
     return res.status(500).send({

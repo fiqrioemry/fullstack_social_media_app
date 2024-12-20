@@ -3,7 +3,7 @@ const { uploadMediaToCloudinary } = require("../../utils/cloudinary");
 
 const getUserHomeDetails = async (req, res) => {
   const { username } = req.params;
-
+  const { limit = 3 } = req.body;
   if (!username) {
     return res.status(400).json({
       success: false,
@@ -27,18 +27,22 @@ const getUserHomeDetails = async (req, res) => {
       });
     }
 
-    const postsCount = await user.getPosts({
-      limit: 1,
-      order: [["createdAt", "DESC"]],
-    });
-    const followingsCount = await user.countFollowings();
-    const followersCount = await user.countFollowers();
+    const [followingsCount, followersCount, posts] = await Promise.all([
+      user.countFollowings(),
+      user.countFollowers(),
+      user.getPosts({
+        limit,
+        order: [["createdAt", "DESC"]],
+        attributes: ["id", "content", "createdAt"],
+      }),
+    ]);
 
     return res.status(200).send({
       success: true,
       data: {
         user: user,
-        posts: postsCount,
+        posts: posts,
+        total: posts.length,
         followers: followersCount,
         followings: followingsCount,
       },

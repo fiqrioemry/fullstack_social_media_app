@@ -148,10 +148,14 @@ async function deleteMyPost(req, res) {
 }
 
 // get all public post
-async function getAllPublicPosts(req, res) {
+const getAllPublicPosts = async (req, res) => {
   try {
+    const { limit = 3 } = req.body;
+
     const posts = await Post.findAll({
+      limit: limit,
       order: [["createdAt", "DESC"]],
+      attributes: ["id", "content", "createdAt"],
       include: [
         {
           model: User,
@@ -162,63 +166,78 @@ async function getAllPublicPosts(req, res) {
           model: PostGallery,
           attributes: ["image"],
         },
-        {
-          model: Comment,
-          as: "comments",
-          include: [
-            {
-              model: Comment,
-              as: "replies",
-            },
-          ],
-        },
-        {
-          model: Like,
-          include: User,
-        },
       ],
     });
 
     if (!posts.length) {
       return res
         .status(404)
-        .json({ success: false, message: "No public posts found" });
+        .send({ success: false, message: "No public posts found" });
     }
 
-    res.status(200).json({ success: true, posts });
+    const postDetails = await Promise.all(
+      posts.map(async (post) => {
+        const [commentCount, likeCount] = await Promise.all([
+          Comment.count({ where: { postId: post.id } }),
+          Like.count({ where: { postId: post.id } }),
+        ]);
+
+        return {
+          ...post.toJSON(),
+          commentCount,
+          likeCount,
+        };
+      })
+    );
+
+    res.status(200).send({
+      success: true,
+      data: postDetails,
+    });
   } catch (error) {
     return res.status(500).send({
       success: false,
-      message: "Failed to get user details",
+      message: "Failed to get public posts",
       error: error.message,
     });
   }
-}
+};
 
 // get following user post
-async function getFollowedPosts(req, res) {
+const getAllFollowingPosts = async (req, res) => {
   const { userId } = req.user;
+  const { limit = 3 } = req.body;
 
   try {
-    const followedIds = await Follower.findAll({
-      where: { followerId: userId },
-      attributes: ["followedId"],
-      raw: true,
-    }).then((follows) => follows.map((follow) => follow.followedId));
+    const user = await User.findByPk(userId, {
+      include: {
+        model: User,
+        as: "followings",
+        attributes: ["id"],
+      },
+    });
 
-    if (!followedIds.length) {
-      return res.status(404).json({
-        success: false,
-        message: "You are not following anyone yet",
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    const followingIds = user.followings.map((following) => following.id);
+
+    if (followingIds.length === 0) {
+      return res.status(200).json({
+        success: true,
+        message: "No posts to show, you are not following anyone.",
+        data: [],
       });
     }
 
     const posts = await Post.findAll({
-      where: {
-        userId: {
-          [Sequelize.Op.in]: followedIds,
-        },
-      },
+      limit: limit,
+      where: { userId: { [Op.in]: followingIds } },
+      order: [["createdAt", "DESC"]],
+      attributes: ["id", "content", "createdAt"],
       include: [
         {
           model: User,
@@ -229,25 +248,42 @@ async function getFollowedPosts(req, res) {
           attributes: ["image"],
         },
       ],
-      order: [["createdAt", "DESC"]],
+      subQuery: false,
+      distinct: true,
     });
 
     if (!posts.length) {
-      return res.status(404).json({
-        success: false,
-        message: "No posts found from followed users",
-      });
+      return res
+        .status(404)
+        .json({ success: false, message: "No posts found" });
     }
 
-    res.status(200).json({ success: true, posts });
+    const postDetails = await Promise.all(
+      posts.map(async (post) => {
+        const commentCount = await post.countComments();
+        const likeCount = await post.countLikes();
+
+        return {
+          ...post.toJSON(),
+          commentCount,
+          likeCount,
+        };
+      })
+    );
+
+    res.status(200).json({
+      success: true,
+      data: postDetails,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({
       success: false,
-      message: "Failed to retrieve followed posts",
+      message: "Failed to retrieve following posts",
+      error: error.message,
     });
   }
-}
+};
 
 // get all user post in home
 async function getUserPosts(req, res) {
@@ -281,7 +317,7 @@ async function getPostDetail(req, res) {
         { model: User, attributes: ["id", "username"] },
         {
           model: Comment,
-          as: "parentComment",
+          as: "comments",
           attributes: ["id", "comment"],
           include: [
             { model: User, attributes: ["id", "username"] },
@@ -327,7 +363,7 @@ module.exports = {
   updateMyPost,
   deleteMyPost,
   getAllPublicPosts,
-  getFollowedPosts,
+  getAllFollowingPosts,
   getUserPosts,
   getPostDetail,
 };

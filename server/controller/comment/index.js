@@ -46,8 +46,4 @@ async function createCommentOrReply(req, res) {
 
 module.exports = {
   createCommentOrReply,
-  updateMyComment,
-  updateMyReply,
-  deleteMyComment,
-  deleteMyReply,
 };
