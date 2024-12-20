@@ -19,6 +19,9 @@ const getUserHomeDetails = async (req, res) => {
     const user = await User.findOne({
       where: { username },
       attributes: ["id", "username"],
+      include: [
+        { model: Profile, attributes: ["firstname", "lastname", "bio"] },
+      ],
     });
 
     if (!user) {
@@ -28,8 +31,10 @@ const getUserHomeDetails = async (req, res) => {
       });
     }
 
-    // Menghitung jumlah postingan tanpa memuat data postingan
-    const postsCount = await user.countPosts();
+    const postsCount = await user.getPosts({
+      limit: 1,
+      order: [["createdAt", "DESC"]],
+    });
     const followingsCount = await user.countFollowings();
     const followersCount = await user.countFollowers();
 
@@ -37,7 +42,7 @@ const getUserHomeDetails = async (req, res) => {
     return res.status(200).send({
       success: true,
       data: {
-        username: user.username,
+        user: user,
         posts: postsCount,
         followers: followersCount,
         followings: followingsCount,

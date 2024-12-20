@@ -1,10 +1,10 @@
-const { User, Follow } = require("../../models");
+const { User, Profile, Follow } = require("../../models");
 
 async function followNewUser(req, res) {
   const { userId } = req.user;
   const { followingId } = req.params;
   try {
-    if (userId === followingId) {
+    if (userId == followingId) {
       return res.status(400).send({
         success: false,
         message: "Cannot follow yourself",
@@ -28,7 +28,6 @@ async function followNewUser(req, res) {
       });
     }
 
-    // Buat follow baru
     await Follow.create({
       followerId: userId,
       followingId: followingId,
@@ -78,7 +77,7 @@ async function unfollowUser(req, res) {
   } catch (error) {
     return res.status(500).send({
       success: false,
-      message: "Failed to create new post",
+      message: "Failed to unfollow user",
       error: error.message,
     });
   }
@@ -95,6 +94,7 @@ async function getUserFollowers(req, res) {
 
     const followers = await user.getFollowers({
       attributes: ["username"],
+      include: [{ model: Profile, attributes: ["firstname", "lastname"] }],
     });
 
     res.status(200).send({
@@ -104,7 +104,7 @@ async function getUserFollowers(req, res) {
   } catch (error) {
     return res.status(500).send({
       success: false,
-      message: "Failed to create new post",
+      message: "Failed to get followers detail",
       error: error.message,
     });
   }
@@ -121,6 +121,7 @@ async function getUserFollowings(req, res) {
 
     const followings = await user.getFollowings({
       attributes: ["username"],
+      include: [{ model: Profile, attributes: ["firstname", "lastname"] }],
     });
 
     res.status(200).send({
@@ -130,7 +131,7 @@ async function getUserFollowings(req, res) {
   } catch (error) {
     return res.status(500).send({
       success: false,
-      message: "Failed to create new post",
+      message: "Failed to get followings detail",
       error: error.message,
     });
   }
