@@ -125,7 +125,7 @@ async function deleteMyPost(req, res) {
     if (!post) {
       return res
         .status(404)
-        .json({ success: false, message: "Post not found or unauthorized" });
+        .send({ success: false, message: "Post not found or unauthorized" });
     }
 
     const images = await PostGallery.findAll({

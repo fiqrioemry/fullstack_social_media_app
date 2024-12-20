@@ -22,11 +22,16 @@ router.put(
   isAuthenticate,
   updateMyProfile
 );
-router.get("/profile/:username", isAuthenticate, getUserHomeDetails);
 
-router.post("/follow/:followingId", isAuthenticate, followNewUser);
-router.get("/followers/:userId", isAuthenticate, getUserFollowers);
-router.get("/followings/:userId", isAuthenticate, getUserFollowings);
-router.delete("/unfollow/:followingId", isAuthenticate, unfollowUser);
+// user home detail
+router.get("/:username", isAuthenticate, getUserHomeDetails);
+
+// followers and followings
+router.get("/:username/followers", isAuthenticate, getUserFollowers);
+router.get("/:username/followings", isAuthenticate, getUserFollowings);
+
+// follow and unfollow
+router.post("/:followingId/follow", isAuthenticate, followNewUser);
+router.delete("/:followingId/unfollow", isAuthenticate, unfollowUser);
 
 module.exports = router;

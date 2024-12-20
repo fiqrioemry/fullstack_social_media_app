@@ -60,6 +60,7 @@ async function userSignIn(req, res) {
         },
       ],
     });
+    console.log(userData);
 
     if (!userData)
       return res.status(404).send({
@@ -79,7 +80,7 @@ async function userSignIn(req, res) {
       userId: userData.id,
       userEmail: userData.email,
       userName: userData.username,
-      userAvatar: userData.Profile.dataValues.avatar,
+      userAvatar: userData.Profile?.avatar,
     };
     const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN, {
       expiresIn: "1d",
@@ -99,10 +100,7 @@ async function userSignIn(req, res) {
     res.status(200).send({
       success: true,
       message: "Login is success",
-      data: {
-        accessToken,
-        payload,
-      },
+      data: userData,
     });
   } catch (error) {
     return res.status(500).send({

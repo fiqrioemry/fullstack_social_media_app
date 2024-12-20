@@ -3,6 +3,7 @@ const { User, Profile, Follow } = require("../../models");
 async function followNewUser(req, res) {
   const { userId } = req.user;
   const { followingId } = req.params;
+
   try {
     if (userId == followingId) {
       return res.status(400).send({

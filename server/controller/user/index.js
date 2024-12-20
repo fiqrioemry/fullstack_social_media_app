@@ -41,7 +41,6 @@ const getUserHomeDetails = async (req, res) => {
       success: true,
       data: {
         user: user,
-        posts: posts,
         total: posts.length,
         followers: followersCount,
         followings: followingsCount,
