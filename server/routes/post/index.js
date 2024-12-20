@@ -14,10 +14,11 @@ const { createCommentOrReply } = require("../../controller/comment");
 const router = express.Router();
 
 // post
-router.get("/", isAuthenticate, getAllPublicPosts);
+router.get("/explore", isAuthenticate, getAllPublicPosts);
 router.get("/:postId", isAuthenticate, getPostDetail);
-router.get("/user/:userId", isAuthenticate, getUserPosts);
-router.get("/follow/user", isAuthenticate, getAllFollowingPosts);
+
+// user post
+router.get("/ ", isAuthenticate, getAllFollowingPosts);
 router.post(
   "/create",
   isAuthenticate,
@@ -39,5 +40,7 @@ router.post(
   isAuthenticate,
   createCommentOrReply
 );
+
+router.get("/:username", isAuthenticate, getUserPosts);
 
 module.exports = router;

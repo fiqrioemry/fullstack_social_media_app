@@ -14,7 +14,7 @@ const { upload } = require("../../middleware.js/media");
 const isAuthenticate = require("../../middleware.js/isAuthenticate");
 
 const router = express.Router();
-
+// user profile setting
 router.get("/profile", isAuthenticate, getMyProfile);
 router.put(
   "/profile/update",

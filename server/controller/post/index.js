@@ -157,11 +157,11 @@ async function deleteMyPost(req, res) {
 // get all public post
 const getAllPublicPosts = async (req, res) => {
   try {
-    const { limit = 10 } = req.body;
+    const { limit = 3 } = req.body;
 
     const posts = await Post.findAll({
       limit: limit,
-      order: [["createdAt", "ASC"]],
+      order: [["createdAt", "DESC"]],
       attributes: ["id", "content", "createdAt"],
       include: [
         {

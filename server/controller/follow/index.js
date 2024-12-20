@@ -85,16 +85,16 @@ async function unfollowUser(req, res) {
 }
 
 async function getUserFollowers(req, res) {
-  const { userId } = req.params;
+  const { username } = req.params;
   try {
-    const user = await User.findByPk(userId);
+    const user = await User.findOne({ where: { username } });
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
     const followers = await user.getFollowers({
-      attributes: ["username"],
+      attributes: ["id", "username"],
       include: [{ model: Profile, attributes: ["firstname", "lastname"] }],
     });
 
@@ -112,28 +112,23 @@ async function getUserFollowers(req, res) {
 }
 
 async function getUserFollowings(req, res) {
-  const { userId } = req.params;
+  const { username } = req.params;
 
   try {
-    const user = await User.findByPk(userId, {
-      include: {
-        model: User,
-        as: "Followings",
-        attributes: ["id", "username"],
-        include: {
-          model: Profile,
-          attributes: ["firstname", "lastname"],
-        },
-      },
-    });
+    const user = await User.findOne({ where: { username } });
 
     if (!user) {
-      return res.status(404).send({ error: "User not found" });
+      return res.status(404).json({ error: "User not found" });
     }
+
+    const followings = await user.getFollowings({
+      attributes: ["id", "username"],
+      include: [{ model: Profile, attributes: ["firstname", "lastname"] }],
+    });
 
     res.status(200).send({
       success: true,
-      data: user.Followings,
+      data: followings,
     });
   } catch (error) {
     return res.status(500).send({

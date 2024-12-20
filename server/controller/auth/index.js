@@ -60,7 +60,6 @@ async function userSignIn(req, res) {
         },
       ],
     });
-    console.log(userData);
 
     if (!userData)
       return res.status(404).send({
@@ -100,7 +99,7 @@ async function userSignIn(req, res) {
     res.status(200).send({
       success: true,
       message: "Login is success",
-      data: userData,
+      data: { accessToken, payload },
     });
   } catch (error) {
     return res.status(500).send({

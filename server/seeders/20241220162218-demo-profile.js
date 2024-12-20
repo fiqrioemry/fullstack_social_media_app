@@ -9,6 +9,7 @@ module.exports = {
     await queryInterface.bulkInsert("Profiles", [
       {
         id: 1,
+        userId: 1,
         avatar: "https://api.dicebear.com/5.x/adventurer/svg?seed=Angel", // Avatar URL
         firstName: "fiqri", // Nama depan
         lastName: "oemry", // Nama belakang
@@ -17,6 +18,7 @@ module.exports = {
       },
       {
         id: 2,
+        userId: 2,
         avatar: "https://api.dicebear.com/5.x/adventurer/svg?seed=Apple", // Avatar URL
         firstName: "apple", // Nama depan
         lastName: "user", // Nama belakang
@@ -25,6 +27,7 @@ module.exports = {
       },
       {
         id: 3,
+        userId: 3,
         avatar: "https://api.dicebear.com/5.x/adventurer/svg?seed=Banana", // Avatar URL
         firstName: "banana", // Nama depan
         lastName: "user", // Nama belakang
@@ -33,6 +36,7 @@ module.exports = {
       },
       {
         id: 4,
+        userId: 4,
         avatar: "https://api.dicebear.com/5.x/adventurer/svg?seed=Coconut", // Avatar URL
         firstName: "coconut", // Nama depan
         lastName: "user", // Nama belakang
