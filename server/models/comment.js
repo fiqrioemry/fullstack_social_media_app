@@ -8,16 +8,17 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+      this.hasMany(models.Reply, { onDelete: "CASCADE" });
+      this.hasMany(models.Comment, { onDelete: "CASCADE" });
+
       this.hasMany(models.Like, {
         foreignKey: "entityId",
         constraints: false,
+        onDelete: "CASCADE",
         scope: {
           entityType: "comment",
         },
       });
-      this.hasMany(models.Reply);
-      this.hasMany(models.Comment);
-
       this.belongsTo(models.User, {
         foreignKey: "userId",
       });

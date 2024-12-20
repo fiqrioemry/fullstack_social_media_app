@@ -298,7 +298,7 @@ const getUserPosts = async (req, res) => {
   const { limit } = req.query;
   try {
     const total = parseInt(limit) || 3;
-    const posts = await Post.findOne({
+    const posts = await Post.findAll({
       where: { userId },
       limit: total,
       order: [["createdAt", "DESC"]],
@@ -318,11 +318,11 @@ const getUserPosts = async (req, res) => {
 
     if (!posts.length) {
       return res
-        .status(404)
-        .send({ success: false, message: "No public posts found" });
+        .status(200)
+        .send({ success: true, message: "This user has no post" });
     }
 
-    const publicPosts = await Promise.all(
+    const userPosts = await Promise.all(
       posts.map(async (post) => {
         const [commentCount, likeCount] = await Promise.all([
           Comment.count({ where: { postId: post.id } }),
@@ -339,12 +339,12 @@ const getUserPosts = async (req, res) => {
 
     res.status(200).send({
       success: true,
-      data: publicPosts,
+      data: userPosts,
     });
   } catch (error) {
     return res.status(500).send({
       success: false,
-      message: "Failed to get public posts",
+      message: "Failed to get user posts",
       error: error.message,
     });
   }

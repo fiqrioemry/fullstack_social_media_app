@@ -18,7 +18,7 @@ router.get("/explore", isAuthenticate, getAllPublicPosts);
 router.get("/:postId/detail", isAuthenticate, getPostDetail);
 
 // user post
-router.get("/ ", isAuthenticate, getAllFollowingPosts);
+router.get("", isAuthenticate, getAllFollowingPosts);
 router.post(
   "/create",
   isAuthenticate,
