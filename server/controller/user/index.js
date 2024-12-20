@@ -3,47 +3,55 @@ const { uploadMediaToCloudinary } = require("../../utils/cloudinary");
 const errorHandler = require("../../utils/errorHandler");
 const { fn, col } = require("sequelize");
 
-async function getUserHomeDetails(req, res) {
+const getUserHomeDetails = async (req, res) => {
   const { username } = req.params;
 
+  // Validasi username
+  if (!username) {
+    return res.status(400).json({
+      success: false,
+      message: "Username is required",
+    });
+  }
+
   try {
+    // Cek apakah user ada menggunakan query hanya untuk data yang diperlukan
     const user = await User.findOne({
       where: { username },
       attributes: ["id", "username"],
-      include: [
-        {
-          model: Post,
-          attributes: ["id", "content"], // Menampilkan post user
-          include: [
-            {
-              model: PostGallery,
-              attributes: ["image"],
-            },
-          ],
-        },
-      ],
-      group: ["User.id"], // Group by User.id untuk agregasi COUNT
     });
 
     if (!user) {
-      return res.status(404).json({
+      return res.status(404).send({
         success: false,
         message: "User not found",
       });
     }
 
-    res.status(200).json({
+    // Menghitung jumlah postingan tanpa memuat data postingan
+    const postsCount = await user.countPosts();
+    const followingsCount = await user.countFollowings();
+    const followersCount = await user.countFollowers();
+
+    // Respons dengan data user
+    return res.status(200).send({
       success: true,
-      data: user,
+      data: {
+        username: user.username,
+        posts: postsCount,
+        followers: followersCount,
+        followings: followingsCount,
+      },
     });
   } catch (error) {
-    return res.status(500).send({
+    console.error("Error getting user home details:", error);
+    return res.status(500).json({
       success: false,
-      message: "Failed to get user details",
+      message: "Internal server error",
       error: error.message,
     });
   }
-}
+};
 
 // async function getUserHomeDetails(req, res) {
 //   const { username } = req.params;

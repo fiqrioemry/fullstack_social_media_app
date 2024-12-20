@@ -14,7 +14,7 @@ async function uploadMediaToCloudinary(filePath) {
   try {
     const result = await cloudinary.uploader.upload(filePath, {
       resource_type: "auto",
-      folder: "bootcamp_learning",
+      folder: "social_media_project",
     });
 
     return result;

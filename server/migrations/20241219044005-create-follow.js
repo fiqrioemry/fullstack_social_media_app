@@ -12,16 +12,10 @@ module.exports = {
       followerId: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        validate: {
-          isInt: true,
-        },
       },
-      followedId: {
+      followingId: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        validate: {
-          isInt: true,
-        },
       },
       createdAt: {
         allowNull: false,
