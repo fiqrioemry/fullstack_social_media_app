@@ -1,16 +1,9 @@
 const { User, Profile } = require("../../models");
 const { uploadMediaToCloudinary } = require("../../utils/cloudinary");
 
+// get user home detail info
 const getUserHomeDetails = async (req, res) => {
   const { username } = req.params;
-  const { limit = 3 } = req.body;
-  if (!username) {
-    return res.status(400).json({
-      success: false,
-      message: "Username is required",
-    });
-  }
-
   try {
     const user = await User.findOne({
       where: { username },
@@ -27,21 +20,17 @@ const getUserHomeDetails = async (req, res) => {
       });
     }
 
-    const [followingsCount, followersCount, posts] = await Promise.all([
+    const [followingsCount, followersCount, postsCount] = await Promise.all([
       user.countFollowings(),
       user.countFollowers(),
-      user.getPosts({
-        limit,
-        order: [["createdAt", "DESC"]],
-        attributes: ["id", "content", "createdAt"],
-      }),
+      user.countPosts(),
     ]);
 
     return res.status(200).send({
       success: true,
       data: {
         user: user,
-        total: posts.length,
+        posts: postsCount,
         followers: followersCount,
         followings: followingsCount,
       },
@@ -55,6 +44,7 @@ const getUserHomeDetails = async (req, res) => {
   }
 };
 
+// get user profile in setting
 async function getMyProfile(req, res) {
   try {
     const { userId } = req.user;
@@ -76,13 +66,13 @@ async function getMyProfile(req, res) {
   }
 }
 
+// update user profile in setting
 async function updateMyProfile(req, res) {
+  const { userId } = req.user;
+
+  const { firstname, lastname, bio, birthday, gender, avatar } = req.body;
+
   try {
-    const { userId } = req.user; // Assuming req.user is populated by middleware
-
-    const { firstname, lastname, bio, birthday, gender, avatar } = req.body;
-
-    // Find the profile by userId
     const profileData = await Profile.findOne({ where: { userId } });
 
     if (!profileData) {
@@ -91,15 +81,13 @@ async function updateMyProfile(req, res) {
         .send({ success: false, message: "Profile not found" });
     }
 
-    let updatedAvatar = avatar; // Initialize new variable for avatar
+    let updatedAvatar = avatar;
 
     if (req.file) {
-      // If file is provided, upload it to Cloudinary
       const newAvatar = await uploadMediaToCloudinary(req.file.path);
-      updatedAvatar = newAvatar.secure_url; // Update avatar with Cloudinary URL
+      updatedAvatar = newAvatar.secure_url;
     }
 
-    // Check if the profile data has changed
     const isDataUpdated =
       profileData.firstname === firstname &&
       profileData.lastname === lastname &&
@@ -115,7 +103,6 @@ async function updateMyProfile(req, res) {
       });
     }
 
-    // Update profile fields
     profileData.firstname = firstname;
     profileData.lastname = lastname;
     profileData.bio = bio;
@@ -123,7 +110,6 @@ async function updateMyProfile(req, res) {
     profileData.gender = gender;
     profileData.avatar = updatedAvatar;
 
-    // Save the updated profile data
     await profileData.save();
 
     return res.status(200).send({
@@ -132,7 +118,6 @@ async function updateMyProfile(req, res) {
       data: profileData,
     });
   } catch (error) {
-    // General error handling
     res.status(500).send({
       success: false,
       message: "Failed to update profile",

@@ -156,11 +156,11 @@ async function deleteMyPost(req, res) {
 
 // get all public post
 const getAllPublicPosts = async (req, res) => {
+  const { limit } = req.query;
   try {
-    const { limit = 3 } = req.body;
-
+    const total = parseInt(limit) || 3;
     const posts = await Post.findAll({
-      limit: limit,
+      limit: total,
       order: [["createdAt", "DESC"]],
       attributes: ["id", "content", "createdAt"],
       include: [
@@ -182,7 +182,7 @@ const getAllPublicPosts = async (req, res) => {
         .send({ success: false, message: "No public posts found" });
     }
 
-    const postDetails = await Promise.all(
+    const publicPosts = await Promise.all(
       posts.map(async (post) => {
         const [commentCount, likeCount] = await Promise.all([
           Comment.count({ where: { postId: post.id } }),
@@ -199,7 +199,7 @@ const getAllPublicPosts = async (req, res) => {
 
     res.status(200).send({
       success: true,
-      data: postDetails,
+      data: publicPosts,
     });
   } catch (error) {
     return res.status(500).send({
@@ -213,8 +213,10 @@ const getAllPublicPosts = async (req, res) => {
 // get following user post
 const getAllFollowingPosts = async (req, res) => {
   const { userId } = req.user;
-  const { limit = 10 } = req.body;
+  const { limit } = req.query;
   try {
+    const total = parseInt(limit) || 3;
+
     const user = await User.findByPk(userId, {
       include: {
         model: User,
@@ -226,7 +228,7 @@ const getAllFollowingPosts = async (req, res) => {
     if (!user) {
       return res
         .status(404)
-        .json({ success: false, message: "User not found" });
+        .send({ success: false, message: "User not found" });
     }
 
     const followingIds = user.Followings.map(
@@ -234,7 +236,7 @@ const getAllFollowingPosts = async (req, res) => {
     );
 
     if (followingIds.length === 0) {
-      return res.status(200).json({
+      return res.status(200).send({
         success: true,
         message: "No posts to show, you are not following anyone.",
         data: [],
@@ -242,7 +244,7 @@ const getAllFollowingPosts = async (req, res) => {
     }
 
     const posts = await Post.findAll({
-      limit: limit,
+      limit: total,
       where: { userId: { [Op.in]: followingIds } },
       order: [["createdAt", "DESC"]],
       attributes: ["id", "content", "createdAt"],
@@ -264,7 +266,7 @@ const getAllFollowingPosts = async (req, res) => {
         .send({ success: false, message: "No posts found" });
     }
 
-    const postDetails = await Promise.all(
+    const followingPosts = await Promise.all(
       posts.map(async (post) => {
         const commentCount = await post.countComments();
         const likeCount = await post.countLikes();
@@ -277,12 +279,12 @@ const getAllFollowingPosts = async (req, res) => {
       })
     );
 
-    res.status(200).json({
+    res.status(200).send({
       success: true,
-      data: postDetails,
+      data: followingPosts,
     });
   } catch (error) {
-    res.status(500).json({
+    res.status(500).send({
       success: false,
       message: "Failed to retrieve following posts",
       error: error.message,
@@ -291,27 +293,62 @@ const getAllFollowingPosts = async (req, res) => {
 };
 
 // get all user post in home
-async function getUserPosts(req, res) {
+const getUserPosts = async (req, res) => {
   const { userId } = req.params;
-  const { page = 1, limit = 10 } = req.query;
-
+  const { limit } = req.query;
   try {
-    const posts = await Post.findAndCountAll({
+    const total = parseInt(limit) || 3;
+    const posts = await Post.findOne({
       where: { userId },
-      include: [{ model: PostGallery, attributes: ["image"] }],
-      limit: parseInt(limit),
-      offset: (parseInt(page) - 1) * parseInt(limit),
+      limit: total,
       order: [["createdAt", "DESC"]],
+      attributes: ["id", "content", "createdAt"],
+      include: [
+        {
+          model: User,
+          where: { isPrivate: false },
+          attributes: ["id", "username"],
+        },
+        {
+          model: PostGallery,
+          attributes: ["image"],
+        },
+      ],
     });
 
-    res.status(200).json({ success: true, data: posts });
+    if (!posts.length) {
+      return res
+        .status(404)
+        .send({ success: false, message: "No public posts found" });
+    }
+
+    const publicPosts = await Promise.all(
+      posts.map(async (post) => {
+        const [commentCount, likeCount] = await Promise.all([
+          Comment.count({ where: { postId: post.id } }),
+          Like.count({ where: { entityId: post.id, entityType: "post" } }),
+        ]);
+
+        return {
+          ...post.toJSON(),
+          commentCount,
+          likeCount,
+        };
+      })
+    );
+
+    res.status(200).send({
+      success: true,
+      data: publicPosts,
+    });
   } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .json({ success: false, message: "Failed to get user posts" });
+    return res.status(500).send({
+      success: false,
+      message: "Failed to get public posts",
+      error: error.message,
+    });
   }
-}
+};
 
 // get the detail of post
 async function getPostDetail(req, res) {

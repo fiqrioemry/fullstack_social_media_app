@@ -15,7 +15,7 @@ const router = express.Router();
 
 // post
 router.get("/explore", isAuthenticate, getAllPublicPosts);
-router.get("/:postId", isAuthenticate, getPostDetail);
+router.get("/:postId/detail", isAuthenticate, getPostDetail);
 
 // user post
 router.get("/ ", isAuthenticate, getAllFollowingPosts);
@@ -41,6 +41,6 @@ router.post(
   createCommentOrReply
 );
 
-router.get("/:username", isAuthenticate, getUserPosts);
+router.get("/:userId", isAuthenticate, getUserPosts);
 
 module.exports = router;
