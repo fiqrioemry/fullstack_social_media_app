@@ -11,7 +11,10 @@ module.exports = (sequelize, DataTypes) => {
       // has
       this.hasMany(models.PostGallery);
       this.hasMany(models.Like);
-      this.hasMany(models.Comment);
+      this.hasMany(models.Comment, {
+        foreignKey: "postId",
+        as: "comments",
+      });
 
       // belong
       this.belongsTo(models.User, { foreignKey: "userId" });

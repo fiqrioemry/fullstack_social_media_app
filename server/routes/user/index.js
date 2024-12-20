@@ -1,30 +1,32 @@
-const express = require("express");
 const {
-  updateUserProfile,
+  getMyProfile,
+  updateMyProfile,
   getUserHomeDetails,
 } = require("../../controller/user");
-const isAuthenticate = require("../../middleware.js/isAuthenticate");
-const { upload } = require("../../middleware.js/media");
 const {
-  followNewUser,
   unfollowUser,
+  followNewUser,
   getUserFollowers,
   getUserFollowings,
 } = require("../../controller/follow");
+const express = require("express");
+const { upload } = require("../../middleware.js/media");
+const isAuthenticate = require("../../middleware.js/isAuthenticate");
+
 const router = express.Router();
 
-router.get("/profile/:username", isAuthenticate, getUserHomeDetails);
+router.get("/profile", isAuthenticate, getMyProfile);
 router.put(
   "/profile/update",
-  upload("image", 1000000).single("file"),
+  upload("image").single("file"),
   isAuthenticate,
-  updateUserProfile
+  updateMyProfile
 );
+router.get("/profile/:username", isAuthenticate, getUserHomeDetails);
 
-// follow
 router.post("/follow/:followingId", isAuthenticate, followNewUser);
-router.delete("/unfollow/:followingId", isAuthenticate, unfollowUser);
 router.get("/followers/:userId", isAuthenticate, getUserFollowers);
 router.get("/followings/:userId", isAuthenticate, getUserFollowings);
+router.delete("/unfollow/:followingId", isAuthenticate, unfollowUser);
 
 module.exports = router;

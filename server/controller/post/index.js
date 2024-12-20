@@ -1,8 +1,9 @@
-const { User, Post, PostGallery } = require("../../models");
 const {
   uploadMediaToCloudinary,
   deleteMediaFromCloudinary,
 } = require("../../utils/cloudinary");
+const { fn, col } = require("sequelize");
+const { User, Post, PostGallery, Comment, Like } = require("../../models");
 
 // create new post
 async function createNewPost(req, res) {
@@ -163,28 +164,19 @@ async function getAllPublicPosts(req, res) {
         },
         {
           model: Comment,
-          as: "parentComment",
-          attributes: [
-            "id",
-            [fn("COUNT", col("parentComment.id")), "commentCount"],
-          ],
+          as: "comments",
           include: [
             {
               model: Comment,
               as: "replies",
-              attributes: ["id"],
             },
           ],
-          // Mengelompokkan berdasarkan Post.id agar perhitungan dilakukan dengan benar
-          group: ["Post.id", "parentComment.id"],
         },
         {
           model: Like,
-          attributes: ["id", [fn("COUNT", col("Like.id")), "likeCount"]],
-          group: ["Post.id"],
+          include: User,
         },
       ],
-      group: ["Post.id", "User.id", "PostGallery.id"],
     });
 
     if (!posts.length) {

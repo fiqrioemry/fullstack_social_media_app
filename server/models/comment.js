@@ -10,19 +10,23 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.hasMany(models.Like);
-      this.hasMany(models.Comment, {
-        foreignKey: "commentId",
-        as: "replies",
+      this.hasMany(models.Comment);
+
+      this.belongsTo(models.User, {
+        foreignKey: "userId",
       });
 
-      // Relasi balasan ke komentar induk (self-referencing)
+      this.belongsTo(models.Post, {
+        foreignKey: "postId",
+        as: "comments",
+        onDelete: "CASCADE",
+      });
+
       this.belongsTo(models.Comment, {
         foreignKey: "commentId",
-        as: "parentComment",
+        as: "replies",
+        onDelete: "CASCADE",
       });
-
-      this.belongsTo(models.User, { foreignKey: "userId" });
-      this.belongsTo(models.Post, { foreignKey: "postId" });
     }
   }
   Comment.init(
@@ -32,10 +36,6 @@ module.exports = (sequelize, DataTypes) => {
       commentId: {
         type: DataTypes.INTEGER,
         allowNull: true,
-        references: {
-          model: "Comment",
-          key: "id",
-        },
       },
       comment: DataTypes.TEXT,
     },

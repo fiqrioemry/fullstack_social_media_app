@@ -1,12 +1,9 @@
-const { User, Profile, Follow, Post, PostGallery } = require("../../models");
+const { User, Profile } = require("../../models");
 const { uploadMediaToCloudinary } = require("../../utils/cloudinary");
-const errorHandler = require("../../utils/errorHandler");
-const { fn, col } = require("sequelize");
 
 const getUserHomeDetails = async (req, res) => {
   const { username } = req.params;
 
-  // Validasi username
   if (!username) {
     return res.status(400).json({
       success: false,
@@ -15,7 +12,6 @@ const getUserHomeDetails = async (req, res) => {
   }
 
   try {
-    // Cek apakah user ada menggunakan query hanya untuk data yang diperlukan
     const user = await User.findOne({
       where: { username },
       attributes: ["id", "username"],
@@ -38,7 +34,6 @@ const getUserHomeDetails = async (req, res) => {
     const followingsCount = await user.countFollowings();
     const followersCount = await user.countFollowers();
 
-    // Respons dengan data user
     return res.status(200).send({
       success: true,
       data: {
@@ -49,77 +44,15 @@ const getUserHomeDetails = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error getting user home details:", error);
     return res.status(500).json({
       success: false,
-      message: "Internal server error",
+      message: "Failed to retrive user home details",
       error: error.message,
     });
   }
 };
 
-// async function getUserHomeDetails(req, res) {
-//   const { username } = req.params;
-
-//   try {
-//     const user = await User.findOne({
-//       where: { username },
-//       attributes: [
-//         "id",
-//         "username",
-//         // Menghitung jumlah followers menggunakan Follow model
-//         [fn("COUNT", col("Followers.followerId")), "followersCount"],
-//         // Menghitung jumlah following menggunakan Follow model
-//         [fn("COUNT", col("Followings.followedId")), "followingCount"],
-//       ],
-//       include: [
-//         {
-//           model: User,
-//           as: "Followers", // Relasi Followers
-//           attributes: [], // Tidak mengambil data, hanya menghitung
-//           through: { attributes: [] }, // Tidak perlu ambil data dari junction table (Follow)
-//         },
-//         {
-//           model: User,
-//           as: "Followings", // Relasi Followings
-//           attributes: [], // Tidak mengambil data, hanya menghitung
-//           through: { attributes: [] }, // Tidak perlu ambil data dari junction table (Follow)
-//         },
-//         {
-//           model: Post,
-//           attributes: ["id", "content"], // Menampilkan post user
-//           include: [
-//             {
-//               model: PostGallery,
-//               attributes: ["image"],
-//             },
-//           ],
-//         },
-//       ],
-//       group: ["User.id"], // Group by User.id untuk agregasi COUNT
-//     });
-
-//     if (!user) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "User not found",
-//       });
-//     }
-
-//     res.status(200).json({
-//       success: true,
-//       data: user,
-//     });
-//   } catch (error) {
-//     return res.status(500).send({
-//       success: false,
-//       message: "Failed to get user details",
-//       error: error.message,
-//     });
-//   }
-// }
-
-async function getUserProfile(req, res) {
+async function getMyProfile(req, res) {
   try {
     const { userId } = req.user;
 
@@ -132,11 +65,15 @@ async function getUserProfile(req, res) {
 
     return res.status(200).send({ success: true, data: profileData });
   } catch (error) {
-    errorHandler(error, "Internal server Error");
+    return res.status(500).json({
+      success: false,
+      message: "Failed to retrive user profile",
+      error: error.message,
+    });
   }
 }
 
-async function updateUserProfile(req, res) {
+async function updateMyProfile(req, res) {
   try {
     const { userId } = req.user; // Assuming req.user is populated by middleware
 
@@ -201,4 +138,4 @@ async function updateUserProfile(req, res) {
   }
 }
 
-module.exports = { getUserProfile, updateUserProfile, getUserHomeDetails };
+module.exports = { getMyProfile, updateMyProfile, getUserHomeDetails };
