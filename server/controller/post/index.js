@@ -2,7 +2,14 @@ const {
   uploadMediaToCloudinary,
   deleteMediaFromCloudinary,
 } = require("../../utils/cloudinary");
-const { User, Post, PostGallery, Comment, Like } = require("../../models");
+const {
+  User,
+  Post,
+  PostGallery,
+  Comment,
+  Like,
+  Reply,
+} = require("../../models");
 const { Op } = require("sequelize");
 
 // create new post
@@ -179,7 +186,7 @@ const getAllPublicPosts = async (req, res) => {
       posts.map(async (post) => {
         const [commentCount, likeCount] = await Promise.all([
           Comment.count({ where: { postId: post.id } }),
-          Like.count({ where: { postId: post.id } }),
+          Like.count({ where: { entityId: post.id, entityType: "post" } }),
         ]);
 
         return {
@@ -313,10 +320,10 @@ async function getPostDetail(req, res) {
     const post = await Post.findByPk(postId, {
       include: [
         { model: User, attributes: ["id", "username"] },
+        { model: PostGallery, attributes: ["image"] },
         {
           model: Comment,
-          as: "comments",
-          attributes: ["id", "comment"],
+          attributes: ["id", "content"],
           include: [
             { model: User, attributes: ["id", "username"] },
             {
@@ -325,9 +332,8 @@ async function getPostDetail(req, res) {
               include: [{ model: User, attributes: ["id", "username"] }],
             },
             {
-              model: Comment,
-              as: "replies",
-              attributes: ["id", "comment"],
+              model: Reply,
+              attributes: ["id", "content"],
               include: [{ model: User, attributes: ["id", "username"] }],
             },
           ],
@@ -350,7 +356,7 @@ async function getPostDetail(req, res) {
   } catch (error) {
     return res.status(500).send({
       success: false,
-      message: "Failed to get user details",
+      message: "Failed to get post details",
       error: error.message,
     });
   }

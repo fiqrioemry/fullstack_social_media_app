@@ -11,12 +11,15 @@ module.exports = {
       },
       userId: {
         type: Sequelize.INTEGER,
+        allowNull: false,
       },
-      postId: {
-        type: Sequelize.INTEGER,
+      entityType: {
+        type: Sequelize.ENUM("post", "comment", "reply"),
+        allowNull: false,
       },
-      commentId: {
+      entityId: {
         type: Sequelize.INTEGER,
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,
