@@ -169,4 +169,30 @@
   h4 {
     @apply text-lg uppercase font-normal leading-loose;
   }
+
+  @keyframes slideIn {
+    0% {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideOut {
+    0% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+  }
+
+  .searchPanel-enter {
+    animation: slideIn 0.3s forwards;
+  }
 }

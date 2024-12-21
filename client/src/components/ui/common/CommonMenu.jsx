@@ -13,13 +13,16 @@ const CommonMenu = ({ select, active }) => {
         } items-center justify-center md:justify-start md:gap-x-3 w-full `}
       >
         <div>{<select.icon />}</div>
-        <span
-          className={` ${
-            active ? "hidden" : "block"
-          } duration-300 transition-all `}
-        >
-          {select.title}
-        </span>
+        <div className="hidden md:block">
+          {" "}
+          <span
+            className={`  ${
+              active ? "hidden" : "block"
+            } duration-300 transition-all `}
+          >
+            {select.title}
+          </span>
+        </div>
       </Button>
     </>
   );
