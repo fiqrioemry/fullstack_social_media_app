@@ -5,7 +5,8 @@ import { useAuth } from "../../../context/AuthProvider";
 import ActiveLogo from "../common/ActiveLogo";
 
 const Sidebar = () => {
-  const { handleNavigate, handleSearch, handlePost, active } = useAuth();
+  const { handleNavigate, handleSearch, handlePost, active, searchPanel } =
+    useAuth();
 
   const sidebarMenu = sidebarMenuConfig(
     handleNavigate,
@@ -27,13 +28,15 @@ const Sidebar = () => {
           <CommonMenu key={index} select={item} active={active} />
         ))}
       </div>
-
       <div
-        className={`bg-background ${
-          active ? "w-[300px] border-r" : "w-0"
-        } absolute top-0 left-[75px] bottom-0 duration-300 transition-all delay-150  `}
+        className={`fixed top-0 inset-y-0 bottom-0 left-[75px] h-full bg-background ${
+          active ? "w-[250px] border-r" : "w-[0px]"
+        }  duration-300 transition-all overflow-x-hidden`}
       >
-        <div className={`${active ? "flex" : "hidden"}`}></div>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima
+        corporis, qui ut suscipit inventore doloribus, quisquam ratione quaerat
+        quae modi velit quo illum. Quisquam ipsa voluptatum, labore amet
+        voluptas quam!
       </div>
     </aside>
   );
