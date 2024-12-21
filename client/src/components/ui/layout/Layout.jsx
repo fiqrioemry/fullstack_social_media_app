@@ -1,16 +1,19 @@
 import { Outlet } from "react-router-dom";
-import Header from "./Navbar";
-import Navbar from "./Sidebar";
+import Navbar from "./Navbar";
+import Sidebar from "./Sidebar";
+import { Fragment } from "react";
 
 const Layout = () => {
   return (
-    <>
-      <Header />
-      <main>
-        <Navbar />
-        <Outlet />
+    <Fragment>
+      <Navbar />
+      <main className="flex h-auto md:h-screen ">
+        <Sidebar />
+        <div className="flex-1 overflow-y-auto p-6">
+          <Outlet />
+        </div>
       </main>
-    </>
+    </Fragment>
   );
 };
 

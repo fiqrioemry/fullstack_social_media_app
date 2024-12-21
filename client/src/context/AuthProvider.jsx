@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
@@ -6,8 +6,11 @@ const AuthContext = createContext();
 // eslint-disable-next-line react/prop-types
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
+  const [active, setActive] = useState(false);
+
   const handleSearch = () => {
     console.log("search username");
+    setActive(!active);
   };
 
   const handlePost = () => {
@@ -18,7 +21,9 @@ export const AuthProvider = ({ children }) => {
     navigate(`/${params}`);
   };
   return (
-    <AuthContext.Provider value={{ handleNavigate, handleSearch, handlePost }}>
+    <AuthContext.Provider
+      value={{ handleNavigate, handleSearch, handlePost, active }}
+    >
       {children}
     </AuthContext.Provider>
   );

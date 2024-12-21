@@ -9,7 +9,7 @@ import {
 export const sidebarMenuConfig = (handleNavigate, handleSearch, handlePost) => [
   {
     icon: HomeIcon,
-    action: () => handleNavigate("/"),
+    action: () => handleNavigate(""),
     title: "Home",
   },
   {

@@ -1,17 +1,17 @@
 /* eslint-disable react/prop-types */
 import { Button } from "@/components/ui/button";
 
-const CommonMenu = ({ select }) => {
+const CommonMenu = ({ select, active }) => {
   return (
     <>
       <Button
         variant="nav"
         size="lg"
         onClick={select.action}
-        className="flex items-center justify-center md:justify-start py-3 px-3 gap-x-0 md:gap-x-3 w-full "
+        className="flex items-center justify-center md:justify-start md:gap-x-3 w-full "
       >
         <div>{<select.icon />}</div>
-        <span className="hidden md:block">{select.title}</span>
+        {!active && <span className="hidden md:block">{select.title}</span>}
       </Button>
     </>
   );
