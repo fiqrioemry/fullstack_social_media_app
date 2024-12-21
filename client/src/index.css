@@ -146,4 +146,27 @@
   body {
     @apply bg-background text-foreground;
   }
+  h1 {
+    @apply text-4xl capitalize font-bold leading-loose;
+  }
+
+  h2 {
+    @apply text-3xl capitalize font-semibold leading-loose;
+  }
+
+  h3 {
+    @apply text-2xl capitalize font-semibold leading-loose;
+  }
+
+  h4 {
+    @apply text-xl uppercase font-medium leading-loose;
+  }
+
+  h4 {
+    @apply text-lg uppercase font-medium leading-loose;
+  }
+
+  h4 {
+    @apply text-lg uppercase font-normal leading-loose;
+  }
 }

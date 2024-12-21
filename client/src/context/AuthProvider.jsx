@@ -1,9 +1,11 @@
 import { createContext, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
 
 // eslint-disable-next-line react/prop-types
 export const AuthProvider = ({ children }) => {
+  const navigate = useNavigate();
   const handleSearch = () => {
     console.log("search username");
   };
@@ -13,7 +15,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const handleNavigate = (params) => {
-    console.log(`navigate to ${params}`);
+    navigate(`/${params}`);
   };
   return (
     <AuthContext.Provider value={{ handleNavigate, handleSearch, handlePost }}>
