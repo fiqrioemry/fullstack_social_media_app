@@ -1,59 +1,16 @@
-import {
-  CircleUserRound,
-  Compass,
-  HomeIcon,
-  Search,
-  SquarePlus,
-} from "lucide-react";
-
-import CommonMenu from "../common/CommonMenu";
 import Logo from "../common/Logo";
+import CommonMenu from "../common/CommonMenu";
+import { sidebarMenuConfig } from "../../../config";
+import { useAuth } from "../../../context/AuthProvider";
 
 const Sidebar = () => {
-  const handleSearch = () => {
-    console.log("search username");
-  };
+  const { handleNavigate, handleSearch, handlePost } = useAuth();
 
-  const handlePost = () => {
-    console.log("create new post");
-  };
-
-  const handleNavigate = () => {
-    console.log("navigate to");
-  };
-
-  const sidebarMenu = [
-    {
-      icon: <HomeIcon />,
-      action: handleNavigate,
-      title: "Home",
-      type: "link",
-    },
-    {
-      icon: <Search />,
-      action: handleSearch,
-      title: "Search",
-      type: "button",
-    },
-    {
-      icon: <Compass />,
-      action: handleNavigate,
-      title: "Explore",
-      type: "link",
-    },
-    {
-      icon: <SquarePlus />,
-      action: handlePost,
-      title: "Create",
-      type: "button",
-    },
-    {
-      icon: <CircleUserRound size={80} />,
-      action: handleNavigate,
-      title: "Profile",
-      type: "link",
-    },
-  ];
+  const sidebarMenu = sidebarMenuConfig(
+    handleNavigate,
+    handleSearch,
+    handlePost
+  );
 
   return (
     <aside className=" px-3 py-0 md:p-3 fixed bottom-0 left-0 w-full md:w-[225px] md:top-0 md:h-screen border-t md:border-r ">

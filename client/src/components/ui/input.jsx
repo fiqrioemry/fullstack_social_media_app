@@ -2,6 +2,7 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
+// eslint-disable-next-line react/prop-types
 const Input = React.forwardRef(({ className, type, ...props }, ref) => {
   return (
     <input
