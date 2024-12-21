@@ -8,10 +8,18 @@ const CommonMenu = ({ select, active }) => {
         variant="nav"
         size="lg"
         onClick={select.action}
-        className="flex items-center justify-center md:justify-start md:gap-x-3 w-full "
+        className={`flex ${
+          select.title === "Search" && "hidden md:flex"
+        } items-center justify-center md:justify-start md:gap-x-3 w-full `}
       >
         <div>{<select.icon />}</div>
-        {!active && <span className="hidden md:block">{select.title}</span>}
+        <span
+          className={` ${
+            active ? "hidden" : "block"
+          } duration-300 transition-all `}
+        >
+          {select.title}
+        </span>
       </Button>
     </>
   );
