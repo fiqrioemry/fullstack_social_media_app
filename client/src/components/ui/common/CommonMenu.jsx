@@ -10,7 +10,7 @@ const CommonMenu = ({ select }) => {
         onClick={select.action}
         className="flex items-center justify-center md:justify-start py-3 px-3 gap-x-0 md:gap-x-3 w-full "
       >
-        <div>{select.icon}</div>
+        <div>{<select.icon />}</div>
         <span className="hidden md:block">{select.title}</span>
       </Button>
     </>

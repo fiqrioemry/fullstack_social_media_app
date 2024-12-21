@@ -8,27 +8,27 @@ import {
 
 export const sidebarMenuConfig = (handleNavigate, handleSearch, handlePost) => [
   {
-    icon: <HomeIcon />,
+    icon: HomeIcon,
     action: () => handleNavigate("home"),
     title: "Home",
   },
   {
-    icon: <Search />,
+    icon: Search,
     action: handleSearch,
     title: "Search",
   },
   {
-    icon: <Compass />,
+    icon: Compass,
     action: () => handleNavigate("explore"),
     title: "Explore",
   },
   {
-    icon: <SquarePlus />,
+    icon: SquarePlus,
     action: handlePost,
     title: "Create",
   },
   {
-    icon: <CircleUserRound />,
+    icon: CircleUserRound,
     action: () => handleNavigate("profile"),
     title: "Profile",
   },
