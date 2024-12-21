@@ -11,12 +11,13 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.Like, {
         foreignKey: "entityId",
         constraints: false,
+        onDelete: "CASCADE",
         scope: {
           entityType: "post",
         },
       });
-      this.hasMany(models.Comment);
-      this.hasMany(models.PostGallery);
+      this.hasMany(models.Comment, { onDelete: "CASCADE" });
+      this.hasMany(models.PostGallery, { onDelete: "CASCADE" });
       this.belongsTo(models.User, { foreignKey: "userId" });
     }
   }

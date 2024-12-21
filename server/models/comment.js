@@ -9,7 +9,6 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       this.hasMany(models.Reply, { onDelete: "CASCADE" });
-      this.hasMany(models.Comment, { onDelete: "CASCADE" });
 
       this.hasMany(models.Like, {
         foreignKey: "entityId",
@@ -24,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       });
       this.belongsTo(models.Post, {
         foreignKey: "postId",
+        onDelete: "CASCADE",
       });
     }
   }

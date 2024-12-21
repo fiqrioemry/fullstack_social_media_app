@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Post, {
         foreignKey: "entityId",
         constraints: false,
+        onDelete: "CASCADE",
         scope: {
           entityType: "post",
         },
@@ -22,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Comment, {
         foreignKey: "entityId",
         constraints: false,
+        onDelete: "CASCADE",
         scope: {
           entityType: "comment",
         },
@@ -29,6 +31,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Reply, {
         foreignKey: "entityId",
         constraints: false,
+        onDelete: "CASCADE",
         scope: {
           entityType: "reply",
         },
