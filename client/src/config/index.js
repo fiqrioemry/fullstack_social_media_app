@@ -24,7 +24,7 @@ export const sidebarMenuConfig = (handleNavigate, handleSearch, handlePost) => [
   },
   {
     icon: SquarePlus,
-    action: handlePost,
+    action: () => handlePost("createPost"),
     title: "Create",
   },
   {
@@ -33,3 +33,8 @@ export const sidebarMenuConfig = (handleNavigate, handleSearch, handlePost) => [
     title: "Profile",
   },
 ];
+
+export const signUpFormData = {
+  files: [],
+  content: "",
+};
