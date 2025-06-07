@@ -1,0 +1,157 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 5.9% 10% / 0.2;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+    --radius: 0.5rem;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 5% 64.9% / 0.2;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground text-sm md:text-base;
+  }
+
+  h1 {
+    @apply text-3xl capitalize font-semibold;
+  }
+  h2 {
+    @apply text-2xl capitalize font-semibold;
+  }
+  h3 {
+    @apply text-xl capitalize font-semibold;
+  }
+  h4 {
+    @apply text-lg capitalize  font-semibold;
+  }
+
+  h5 {
+    @apply text-base capitalize font-medium;
+  }
+
+  h6 {
+    @apply text-xs text-red-500 font-light;
+  }
+
+  p {
+    @apply text-muted-foreground/50 text-xs md:text-sm;
+  }
+
+  span {
+    @apply text-xs md:text-sm;
+  }
+
+  .aside {
+    @apply w-20 lg:w-72 md:relative md:block hidden duration-300;
+  }
+
+  .navbar {
+    @apply flex items-center py-2 md:hidden  top-0 left-0 right-0  text-center border-b border-muted z-10;
+  }
+
+  .side-navbar {
+    @apply absolute top-0 left-0 bottom-0 border-r border-muted-foreground/50 duration-300 bg-background transition-all ease-in p-2 z-30 space-y-4;
+  }
+
+  .bottom-navbar {
+    @apply flex justify-between items-center h-14 gap-2 px-2 md:hidden border-t border-muted bottom-0 left-0 right-0 z-10;
+  }
+
+  .nav-search {
+    @apply absolute top-0 bottom-0 w-80 px-4 py-2 h-full bg-background border-r border-muted-foreground/50  duration-300 transition-all ease-in z-20;
+  }
+
+  .input-primary {
+    @apply w-full outline-none py-1 bg-background;
+  }
+
+  .btn {
+    @apply flex items-center justify-center w-full py-3 px-4 gap-4 capitalize;
+  }
+
+  .btn-secondary {
+    @apply font-medium text-foreground hover:text-foreground/60 cursor-pointer text-xs md:text-sm duration-300;
+  }
+
+  .btn-accent {
+    @apply text-blue-500 hover:text-blue-700 disabled:text-gray-500 font-medium cursor-pointer duration-300;
+  }
+
+  .btn-delete {
+    @apply font-medium text-red-700 hover:text-red-500 cursor-pointer text-xs md:text-sm duration-300;
+  }
+
+  .btn-nav {
+    @apply py-2 px-2 rounded-md capitalize hover:bg-muted-foreground/10 text-primary;
+  }
+  .btn-toggle {
+    @apply flex items-center gap-x-2 px-4 py-2 m-1.5 rounded-lg font-medium cursor-pointer hover:bg-foreground;
+  }
+
+  .btn-selection {
+    @apply text-sm font-semibold min-w-32 bg-muted-foreground/10 hover:bg-muted-foreground/20 rounded-md duration-300;
+  }
+}
