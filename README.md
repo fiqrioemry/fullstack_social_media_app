@@ -1,3 +1,5 @@
+![Thumbnail](./client/public/preview1.png)
+
 # 📷 Instagram Clone – Fullstack Web Application
 
 Instagram Clone is a fullstack social media web application designed to replicate core features of Instagram. It enables users to create and interact with posts, follow other users, and send real-time chat messages. Built with Node.js (Express), MySQL, and MongoDB for the backend and React.js (Vite) with TailwindCSS on the frontend, this project focuses on scalability, security, and real-time engagement.
@@ -272,3 +274,14 @@ Please leave a like for my project if you find it usefull. Thank you
 ## 📜 License
 
 This project is licensed under the MIT License. You are free to use, modify, and distribute it with attribution.
+
+## 🖼️ Preview
+
+![preview2](./client/public/preview2.png)
+![preview3](./client/public/preview3.png)
+![preview4](./client/public/preview4.png)
+![preview5](./client/public/preview5.png)
+![preview6](./client/public/preview6.png)
+![preview7](./client/public/preview7.png)
+![preview8](./client/public/preview8.png)
+![preview9](./client/public/preview9.png)
