@@ -118,95 +118,96 @@ The frontend uses React.js (Vite) and Zustand for lightweight state management. 
 
 ## 7. API Endpoints
 
-### 7.1. Authentication
+### 7.1. Authentication (`/api/auth`)
 
-| Method | Endpoint         | Description                |
-| ------ | ---------------- | -------------------------- |
-| POST   | /signup          | Register a new user        |
-| POST   | /signin          | User login                 |
-| POST   | /signout         | User logout                |
-| POST   | /send-otp        | Send OTP to email          |
-| POST   | /verify-otp      | Verify OTP                 |
-| POST   | /refresh         | Refresh access token       |
-| GET    | /me              | Get current logged-in user |
-| GET    | /google          | Login via Google OAuth     |
-| GET    | /google/callback | Google OAuth callback      |
-
----
-
-### 7.2. Posts
-
-| Method | Endpoint               | Description                        |
-| ------ | ---------------------- | ---------------------------------- |
-| POST   | /posts                 | Create a new post                  |
-| GET    | /posts                 | Retrieve public posts (explore)    |
-| GET    | /posts/following       | Retrieve posts from followed users |
-| GET    | /posts/\:postId        | Get post details                   |
-| GET    | /posts/user/\:username | Get posts by specific user         |
-| DELETE | /posts/\:postId        | Delete a post                      |
-| POST   | /posts/\:postId/like   | Toggle like/unlike post            |
+| Method | Endpoint                  | Description                |
+| ------ | ------------------------- | -------------------------- |
+| POST   | /api/auth/signup          | Register a new user        |
+| POST   | /api/auth/signin          | User login                 |
+| POST   | /api/auth/signout         | User logout                |
+| POST   | /api/auth/send-otp        | Send OTP to email          |
+| POST   | /api/auth/verify-otp      | Verify OTP                 |
+| POST   | /api/auth/refresh         | Refresh access token       |
+| GET    | /api/auth/me              | Get current logged-in user |
+| GET    | /api/auth/google          | Login via Google OAuth     |
+| GET    | /api/auth/google/callback | Google OAuth callback      |
 
 ---
 
-### 7.3. Comments & Replies
+### 7.2. Posts (`/api/posts`)
 
-| Method | Endpoint                                     | Description                  |
-| ------ | -------------------------------------------- | ---------------------------- |
-| POST   | /posts/\:postId/comments                     | Add a comment to a post      |
-| POST   | /posts/\:postId/comments/\:commentId/replies | Reply to a comment           |
-| GET    | /posts/\:postId/comments                     | Get list of comments         |
-| GET    | /posts/\:postId/comments/\:commentId/replies | Get replies to a comment     |
-| DELETE | /comments/\:commentId                        | Delete a comment             |
-| POST   | /comments/\:commentId/like                   | Toggle like/unlike a comment |
-
----
-
-### 7.4. Bookmarks
-
-| Method | Endpoint            | Description                            |
-| ------ | ------------------- | -------------------------------------- |
-| GET    | /bookmarks          | Get saved posts                        |
-| POST   | /bookmarks/\:postId | Toggle save/remove post from bookmarks |
+| Method | Endpoint                   | Description                        |
+| ------ | -------------------------- | ---------------------------------- |
+| POST   | /api/posts                 | Create a new post                  |
+| GET    | /api/posts                 | Retrieve public posts (explore)    |
+| GET    | /api/posts/following       | Retrieve posts from followed users |
+| GET    | /api/posts/\:postId        | Get post details                   |
+| GET    | /api/posts/user/\:username | Get posts by specific user         |
+| DELETE | /api/posts/\:postId        | Delete a post                      |
+| POST   | /api/posts/\:postId/like   | Toggle like/unlike post            |
 
 ---
 
-### 7.5. Chats
+### 7.3. Comments & Replies (`/api/comments`)
 
-| Method | Endpoint            | Description                                |
-| ------ | ------------------- | ------------------------------------------ |
-| GET    | /chats              | Retrieve list of user chats                |
-| GET    | /chats/\:receiverId | Get chat messages with a specific user     |
-| POST   | /chats/\:receiverId | Send message to a user (start or continue) |
-
----
-
-### 7.6. Follow
-
-| Method | Endpoint                       | Description                |
-| ------ | ------------------------------ | -------------------------- |
-| POST   | /follows/\:followingId         | Follow/unfollow a user     |
-| GET    | /follows/\:username/followers  | Get user's followers       |
-| GET    | /follows/\:username/followings | Get users followed by user |
+| Method | Endpoint                                         | Description                  |
+| ------ | ------------------------------------------------ | ---------------------------- |
+| POST   | /api/posts/\:postId/comments                     | Add a comment to a post      |
+| POST   | /api/posts/\:postId/comments/\:commentId/replies | Reply to a comment           |
+| GET    | /api/posts/\:postId/comments                     | Get list of comments         |
+| GET    | /api/posts/\:postId/comments/\:commentId/replies | Get replies to a comment     |
+| DELETE | /api/comments/\:commentId                        | Delete a comment             |
+| POST   | /api/comments/\:commentId/like                   | Toggle like/unlike a comment |
 
 ---
 
-### 7.7. Notifications
+### 7.4. Bookmarks (`/api/bookmarks`)
 
-| Method | Endpoint       | Description                    |
-| ------ | -------------- | ------------------------------ |
-| GET    | /notifications | Retrieve user notifications    |
-| PUT    | /notifications | Mark all notifications as read |
+| Method | Endpoint                | Description                            |
+| ------ | ----------------------- | -------------------------------------- |
+| GET    | /api/bookmarks          | Get saved posts                        |
+| POST   | /api/bookmarks/\:postId | Toggle save/remove post from bookmarks |
 
 ---
 
-### 7.8. Profile
+### 7.5. Chats (`/api/chats`)
 
-| Method | Endpoint            | Description                |
-| ------ | ------------------- | -------------------------- |
-| GET    | /profile/me         | Get own profile            |
-| PUT    | /profile            | Update profile             |
-| GET    | /profile/\:username | Get another user's profile |
-| GET    | /search             | Search users               |
+| Method | Endpoint                | Description                                |
+| ------ | ----------------------- | ------------------------------------------ |
+| GET    | /api/chats              | Retrieve list of user chats                |
+| GET    | /api/chats/\:receiverId | Get chat messages with a specific user     |
+| POST   | /api/chats/\:receiverId | Send message to a user (start or continue) |
+
+---
+
+### 7.6. Follow (`/api/follows`)
+
+| Method | Endpoint                           | Description                |
+| ------ | ---------------------------------- | -------------------------- |
+| POST   | /api/follows/\:followingId         | Follow/unfollow a user     |
+| GET    | /api/follows/\:username/followers  | Get user's followers       |
+| GET    | /api/follows/\:username/followings | Get users followed by user |
+
+---
+
+### 7.7. Notifications (`/api/notifications`)
+
+| Method | Endpoint           | Description                    |
+| ------ | ------------------ | ------------------------------ |
+| GET    | /api/notifications | Retrieve user notifications    |
+| PUT    | /api/notifications | Mark all notifications as read |
+
+---
+
+### 7.8. Profile (`/api/profile` & `/api/users`)
+
+| Method | Endpoint                | Description                |
+| ------ | ----------------------- | -------------------------- |
+| GET    | /api/profile/me         | Get own profile            |
+| PUT    | /api/profile            | Update profile             |
+| GET    | /api/profile/\:username | Get another user's profile |
+| GET    | /api/users/search       | Search users               |
+
 
 ## 8. How To Run this project
 
