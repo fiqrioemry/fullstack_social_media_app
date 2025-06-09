@@ -118,64 +118,95 @@ The frontend uses React.js (Vite) and Zustand for lightweight state management. 
 
 ## 7. API Endpoints
 
-### 7.1 Authentication & User Management
+### 7.1. Authentication
 
 | Method | Endpoint         | Description                |
 | ------ | ---------------- | -------------------------- |
-| POST   | /auth/signup     | Register with email        |
-| POST   | /auth/signin     | Login with email           |
-| GET    | /auth/google     | Google OAuth login         |
-| POST   | /auth/send-otp   | Send OTP                   |
-| POST   | /auth/verify-otp | Verify OTP                 |
-| POST   | /auth/refresh    | Refresh JWT token          |
-| GET    | /auth/me         | Get logged-in user profile |
+| POST   | /signup          | Register a new user        |
+| POST   | /signin          | User login                 |
+| POST   | /signout         | User logout                |
+| POST   | /send-otp        | Send OTP to email          |
+| POST   | /verify-otp      | Verify OTP                 |
+| POST   | /refresh         | Refresh access token       |
+| GET    | /me              | Get current logged-in user |
+| GET    | /google          | Login via Google OAuth     |
+| GET    | /google/callback | Google OAuth callback      |
 
 ---
 
-### 7.2 Post & Interaction
+### 7.2. Posts
 
-| Method | Endpoint             | Description           |
-| ------ | -------------------- | --------------------- |
-| GET    | /posts               | Get all posts (feed)  |
-| POST   | /posts               | Create a new post     |
-| PUT    | /posts/\:id          | Edit post by ID       |
-| DELETE | /posts/\:id          | Delete post by ID     |
-| POST   | /posts/\:id/like     | Like a post           |
-| POST   | /posts/\:id/bookmark | Bookmark a post       |
-| POST   | /posts/\:id/comments | Add comment to a post |
-| POST   | /comments/\:id/reply | Reply to a comment    |
-
----
-
-### 7.3 Real-time Chat
-
-| Method | Endpoint       | Description                   |
-| ------ | -------------- | ----------------------------- |
-| GET    | /chat          | Get all conversations         |
-| GET    | /chat/\:userId | Get chat with a specific user |
-| POST   | /chat/\:userId | Send message (text/image)     |
+| Method | Endpoint               | Description                        |
+| ------ | ---------------------- | ---------------------------------- |
+| POST   | /posts                 | Create a new post                  |
+| GET    | /posts                 | Retrieve public posts (explore)    |
+| GET    | /posts/following       | Retrieve posts from followed users |
+| GET    | /posts/\:postId        | Get post details                   |
+| GET    | /posts/user/\:username | Get posts by specific user         |
+| DELETE | /posts/\:postId        | Delete a post                      |
+| POST   | /posts/\:postId/like   | Toggle like/unlike post            |
 
 ---
 
-### 7.4 Notifications & Profile
+### 7.3. Comments & Replies
+
+| Method | Endpoint                                     | Description                  |
+| ------ | -------------------------------------------- | ---------------------------- |
+| POST   | /posts/\:postId/comments                     | Add a comment to a post      |
+| POST   | /posts/\:postId/comments/\:commentId/replies | Reply to a comment           |
+| GET    | /posts/\:postId/comments                     | Get list of comments         |
+| GET    | /posts/\:postId/comments/\:commentId/replies | Get replies to a comment     |
+| DELETE | /comments/\:commentId                        | Delete a comment             |
+| POST   | /comments/\:commentId/like                   | Toggle like/unlike a comment |
+
+---
+
+### 7.4. Bookmarks
+
+| Method | Endpoint            | Description                            |
+| ------ | ------------------- | -------------------------------------- |
+| GET    | /bookmarks          | Get saved posts                        |
+| POST   | /bookmarks/\:postId | Toggle save/remove post from bookmarks |
+
+---
+
+### 7.5. Chats
+
+| Method | Endpoint            | Description                                |
+| ------ | ------------------- | ------------------------------------------ |
+| GET    | /chats              | Retrieve list of user chats                |
+| GET    | /chats/\:receiverId | Get chat messages with a specific user     |
+| POST   | /chats/\:receiverId | Send message to a user (start or continue) |
+
+---
+
+### 7.6. Follow
+
+| Method | Endpoint                       | Description                |
+| ------ | ------------------------------ | -------------------------- |
+| POST   | /follows/\:followingId         | Follow/unfollow a user     |
+| GET    | /follows/\:username/followers  | Get user's followers       |
+| GET    | /follows/\:username/followings | Get users followed by user |
+
+---
+
+### 7.7. Notifications
+
+| Method | Endpoint       | Description                    |
+| ------ | -------------- | ------------------------------ |
+| GET    | /notifications | Retrieve user notifications    |
+| PUT    | /notifications | Mark all notifications as read |
+
+---
+
+### 7.8. Profile
 
 | Method | Endpoint            | Description                |
 | ------ | ------------------- | -------------------------- |
-| GET    | /user/notifications | Get all notifications      |
-| PUT    | /user/notifications | Mark notifications as read |
-| GET    | /user/profile       | Get own profile            |
-| PUT    | /user/profile       | Update profile info/avatar |
-
----
-
-### 7.5 Follow System
-
-| Method | Endpoint             | Description               |
-| ------ | -------------------- | ------------------------- |
-| POST   | /user/\:id/follow    | Follow or unfollow a user |
-| GET    | /user/\:id/followers | Get list of followers     |
-| GET    | /user/\:id/following | Get list of following     |
-| GET    | /user/search         | Search users by username  |
+| GET    | /profile/me         | Get own profile            |
+| PUT    | /profile            | Update profile             |
+| GET    | /profile/\:username | Get another user's profile |
+| GET    | /search             | Search users               |
 
 ## 8. How To Run this project
 
