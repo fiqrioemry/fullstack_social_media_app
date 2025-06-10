@@ -291,8 +291,6 @@ npm run dev
 
 ## 📩9. Live Demo & Contact
 
-- 🌍 Live Preview: your-deployment-url.com
-
 - 🧑‍💻 Developer: Ahmad Fiqri Oemry
 
 - ✉️ Email: fiqrioemry@gmail.com | ahmadfiqrioemry@gmail.com
@@ -300,6 +298,8 @@ npm run dev
 - 🔗 LinkedIn: linkedin.com/in/ahmadfiqrioemry
 
 - 🌐 Website: ahmadfiqrioemry.com
+
+- 🌍 Live Preview: happyshop.ahmadfiqrioemry.com
 
 Please leave a like for my project if you find it usefull. Thank you
 
