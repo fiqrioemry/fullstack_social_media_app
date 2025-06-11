@@ -78,7 +78,9 @@ The frontend uses React.js (Vite) and Zustand for lightweight state management. 
 
 📥 Media handling via Multer and Cloudinary
 
-## 📦 Structured architecture for scalability and modularity
+📦 Structured architecture for scalability and modularity
+
+---
 
 ## 6. Tech Stack
 
