@@ -1,5 +1,5 @@
 module.exports = async function verifyApiKey(req, res, next) {
-  const bypassPaths = [];
+  const bypassPaths = ["/", "/health"];
 
   if (bypassPaths.some((path) => req.path.startsWith(path))) {
     return next();
