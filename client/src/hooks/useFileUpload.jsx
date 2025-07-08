@@ -4,8 +4,8 @@ export const useFileUpload = (
   setFieldValue, // mengatur nilai field dalam form, kombinasikan dengan formik
   formValues, // state yang menyimpan nilai dalam form. kombinasikan dengan formik
   upload = null, // set jika ingin langsung mengirim request upload ke server
-  size = 5000000, //set untuk ukuran max. file yang mau diupload
-  amount = 3 //set untuk jumlah max. file yang mau diupload
+  size = 1000000, //set untuk ukuran max. file yang mau diupload
+  amount = 5 //set untuk jumlah max. file yang mau diupload
 ) => {
   // Validasi ukuran file
   const isSizeValid = (files) => {

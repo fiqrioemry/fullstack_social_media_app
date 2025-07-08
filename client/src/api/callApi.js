@@ -1,44 +1,43 @@
-import { authInstance, publicInstance } from '.';
+import { authInstance, publicInstance } from ".";
 
 const errorHandle = (error) => {
-  const errorMessage = error.response?.data?.message || 'Something went wrong';
+  const errorMessage = error.response?.data?.message || "Something went wrong";
 
   return Promise.reject(new Error(errorMessage));
 };
 
 const callApi = {
-  // 🔹Authentication API route management
   authCheck: async () => {
     return authInstance
-      .get('/auth/me')
+      .get("/auth/me")
       .then((res) => res.data)
       .catch(errorHandle);
   },
 
   signup: async (formData) => {
     return authInstance
-      .post('/auth/signup', formData)
+      .post("/auth/signup", formData)
       .then((res) => res.data)
       .catch(errorHandle);
   },
 
   sendOTP: async (formData) => {
     return authInstance
-      .post('/auth/send-otp', formData)
+      .post("/auth/send-otp", formData)
       .then((res) => res.data)
       .catch(errorHandle);
   },
 
   verifyOTP: async (formData) => {
     return authInstance
-      .post('/auth/verify-otp', formData)
+      .post("/auth/verify-otp", formData)
       .then((res) => res.data)
       .catch(errorHandle);
   },
 
   signin: async (formData) => {
     return authInstance
-      .post('/auth/signin', formData)
+      .post("/auth/signin", formData)
       .then((res) => {
         return res.data;
       })
@@ -47,7 +46,7 @@ const callApi = {
 
   signout: async () => {
     return publicInstance
-      .post('/auth/signout')
+      .post("/auth/signout")
       .then((res) => {
         return res.data;
       })
@@ -56,7 +55,7 @@ const callApi = {
 
   refreshToken: async () => {
     return publicInstance
-      .post('/auth/refresh')
+      .post("/auth/refresh")
       .then((res) => res.data)
       .catch(errorHandle);
   },
@@ -91,15 +90,15 @@ const callApi = {
 
   getMyProfile: async () => {
     return authInstance
-      .get('/user/profile')
+      .get("/user/profile")
       .then((res) => res.data)
       .catch(errorHandle);
   },
 
   updateProfile: async (formData) => {
     return authInstance
-      .put('/user/profile', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+      .put("/user/profile", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => res.data)
       .catch(errorHandle);
@@ -136,8 +135,8 @@ const callApi = {
 
   createPost: async (formData) => {
     return authInstance
-      .post('/post', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+      .post("/post", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => res.data)
       .catch(errorHandle);
@@ -245,7 +244,7 @@ const callApi = {
   // Real Time Chat API's Management :
   getChats: async () => {
     return authInstance
-      .get('/chat')
+      .get("/chat")
       .then((res) => res.data)
       .catch(errorHandle);
   },
@@ -262,7 +261,7 @@ const callApi = {
     console.log(receiverId);
     return authInstance
       .post(`/chat/${receiverId}`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => res.data)
       .catch(errorHandle);
