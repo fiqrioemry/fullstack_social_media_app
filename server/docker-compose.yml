@@ -8,6 +8,12 @@ services:
       - .env
     networks:
       - shared-net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.socialmedia.rule=Host(`api.ahmadfiqrioemry.com`)"
+      - "traefik.http.services.socialmedia.loadbalancer.server.port=5000"
+      - "traefik.http.routers.socialmedia.entrypoints=websecure"
+      - "traefik.http.routers.socialmedia.tls.certresolver=letsencrypt"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
       interval: 15s

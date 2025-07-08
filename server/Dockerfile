@@ -19,5 +19,5 @@ EXPOSE 5000
 # SET NODE_ENV agar sequelize bisa baca config dengan benar
 ENV NODE_ENV=production
 
-# Command untuk menjalankan aplikasi
-CMD ["sh", "-c", "npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all && npm run dev"]
+
+CMD ["npm", "run", "dev"]

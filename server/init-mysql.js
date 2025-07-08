@@ -16,7 +16,6 @@ const main = async () => {
     `DROP DATABASE IF EXISTS \`${process.env.DB_DATABASE}\`;`
   );
 
-  // CREATE database
   await connection.query(`CREATE DATABASE \`${process.env.DB_DATABASE}\`;`);
 
   await connection.end();

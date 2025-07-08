@@ -10,7 +10,7 @@ const main = async () => {
 
   try {
     await client.connect();
-    console.log("✅ Connected to MongoDB");
+    console.log("✅Connected to MongoDB");
 
     const admin = client.db().admin();
     const { databases } = await admin.listDatabases();
@@ -21,7 +21,7 @@ const main = async () => {
 
     if (dbExists) {
       await client.db(process.env.DB_DATABASE).dropDatabase();
-      console.log(`🗑️ Dropped existing database '${process.env.DB_DATABASE}'`);
+      console.log(`Dropped existing database '${process.env.DB_DATABASE}'`);
     }
 
     await client.db(process.env.DB_DATABASE).createCollection("Message");
