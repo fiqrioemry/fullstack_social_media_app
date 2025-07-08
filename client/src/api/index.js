@@ -1,13 +1,13 @@
-import axios from 'axios';
-import callApi from './callApi';
-import { useAuthStore } from '@/store/useAuthStore';
+import axios from "axios";
+import callApi from "./callApi";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export const authInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
   withCredentials: true,
   headers: {
-    'Content-Type': 'application/json',
-    'X-API-Key': import.meta.env.VITE_API_KEY,
+    "Content-Type": "application/json",
+    "X-API-Key": import.meta.env.VITE_API_KEY,
   },
 });
 
@@ -15,8 +15,8 @@ export const publicInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
   withCredentials: true,
   headers: {
-    'Content-Type': 'application/json',
-    'X-API-Key': import.meta.env.VITE_API_KEY,
+    "Content-Type": "application/json",
+    "X-API-Key": import.meta.env.VITE_API_KEY,
   },
 });
 
@@ -31,7 +31,7 @@ authInstance.interceptors.request.use(
 
   (error) => {
     Promise.reject(error);
-  },
+  }
 );
 
 authInstance.interceptors.response.use(
@@ -54,5 +54,5 @@ authInstance.interceptors.response.use(
       }
     }
     return Promise.reject(error);
-  },
+  }
 );

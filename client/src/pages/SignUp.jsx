@@ -12,7 +12,7 @@ import StepTwo from "@/components/auth/StepTwo";
 import StepThree from "@/components/auth/StepThree";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useFormSchema } from "@/hooks/useFormSchema";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/Card";
 
 const SignUp = () => {
   const navigate = useNavigate();

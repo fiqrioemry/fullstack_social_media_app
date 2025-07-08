@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 import { usePostStore } from "@/store/usePostStore";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { Drawer, DrawerContent } from "@/components/ui/drawer";
+import { Drawer, DrawerContent } from "@/components/ui/Drawer";
 import DialogDisplay from "@/components/post-detail/DialogDisplay";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import PostDetailLoading from "@/components/skeleton/PostDetailLoading";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/Dialog";
 
 const PostDetailDialog = () => {
   const { id } = useParams();

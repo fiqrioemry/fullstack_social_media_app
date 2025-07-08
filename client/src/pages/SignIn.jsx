@@ -5,7 +5,7 @@ import { signInControl, signInState } from "@/config";
 import { useFormSchema } from "@/hooks/useFormSchema";
 import GoogleAuth from "@/components/auth/GoogleAuth";
 import InputButton from "@/components/form/InputButton";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/Card";
 
 const SignIn = () => {
   const { signin, loading } = useAuthStore();
